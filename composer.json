@@ -4,16 +4,14 @@
     "require" : {
         "phpexcel/phpexcel":        "1.7.7",
         "smarty/smarty":            "3.1.11",
-        "MDB2":                     ">=2.4.1",
-        "MDB2_Driver_mysqli":       ">=1.4.1"
+        "pear/MDB2":                     ">=2.4.1",
+        "pear/MDB2_Driver_mysqli":       ">=1.4.1"
     },
     "repositories": {
-        "pear php net": {
-	            "pear": {
-	                "url": "http://pear.php.net/",
-	                "url": "http://de.pear.php.net/",
-	                "url": "http://us.pear.php.net/"
-	            }
+        {
+            "type": "pear",
+            "url": "http://pear.php.net",
+            "vendor-alias": "pear"
         }
     },
     "autoload": {
