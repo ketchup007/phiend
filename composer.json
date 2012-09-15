@@ -1,5 +1,8 @@
 {
     "name" : "ketchup007/phiend",
-    "version" : "0.3.2",
-    "require" : {}
+    "version" : "0.3.3",
+    "require" : {},
+    "autoload": {
+        "psr-0": {"Phiend": "extra/"}
+    }
 }
