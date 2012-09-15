@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!-- $Id: phiend-config.xml,v 1.4 2003/11/11 12:32:11 cryonax Exp $ -->
+
+<phiend-config>
+
+	<basic-config>
+		<use-redirects>true</use-redirects>
+	</basic-config>
+
+	<session-config>
+		<use-sessions>true</use-sessions>
+		<session-name>phiend</session-name>
+	</session-config>
+
+	<auth-config>
+		<use-auth>true</use-auth>
+		<cache-user-roles>true</cache-user-roles>
+	</auth-config>
+
+	<error-config>
+		<log-level>E_ALL</log-level>
+	</error-config>
+
+	<actions>
+		<!-- tour: require auth -->
+		<action>
+			<name>Tour</name>
+			<action-config>
+				<accept-password>true</accept-password>
+				<accept-sid>true</accept-sid>
+				<required-roles>view_tour</required-roles>
+				<type>view</type>
+				<fallback-action>AccessDenied</fallback-action>
+			</action-config>
+			<matches>
+				<contains>/application/tour</contains>
+			</matches>
+		</action>
+		<action>
+			<name>ViewPhiendSource</name>
+			<inherit-from>Tour</inherit-from>
+			<action-config>
+				<required-roles>view_tour view_src</required-roles>
+			</action-config>
+			<matches>
+				<contains>/application/phiend-source</contains>
+			</matches>
+		</action>
+		<action>
+			<name>ViewActionSource</name>
+			<inherit-from>Tour</inherit-from>
+			<action-config/>
+			<matches>
+				<contains>/application/action-source</contains>
+			</matches>
+		</action>
+		<!-- access control -->
+		<action>
+			<name>AccessDenied</name>
+			<action-config>
+				<type>view</type>
+			</action-config>
+			<matches/>
+		</action>
+		<!-- standard actions: no auth -->
+		<action>
+			<name>ViewCredits</name>
+			<action-config>
+				<force-logout>true</force-logout>
+				<type>view</type>
+			</action-config>
+			<matches>
+				<contains>/application/credits</contains>
+			</matches>
+		</action>
+		<action>
+			<name>Home</name>
+			<inherit-from>ViewCredits</inherit-from>
+			<action-config/>
+			<matches>
+				<always/>
+			</matches>
+		</action>
+	</actions>
+
+	<auth-drivers>
+		<auth-driver>
+			<name>TxtAuthDriver</name>
+			<param name="file">passwd.txt</param>
+			<param name="encryption">none</param>
+		</auth-driver>
+	</auth-drivers>
+
+	<log-drivers>
+		<log-driver>
+			<name>PearLogDriver</name>
+			<param name="type">file</param>
+			<param name="name">phiend.log</param>
+		</log-driver>
+	</log-drivers>
+</phiend-config>
