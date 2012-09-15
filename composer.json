@@ -2,7 +2,7 @@
     "name" : "ketchup007/phiend",
     "version" : "0.3.3",
     "require" : {
-        "mpdf/mpdf":                    "5.1.*",
+        "mpdf/mpdf":                    "*",
         "phpexcel/phpexcel":            "1.7.7",
         "smarty/smarty":                "3.1.11",
         "pear-pear/MDB2":               ">=2.4.1",
