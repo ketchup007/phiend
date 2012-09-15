@@ -7,13 +7,13 @@
         "pear/MDB2":                     ">=2.4.1",
         "pear/MDB2_Driver_mysqli":       ">=1.4.1"
     },
-    "repositories": {
+    "repositories": [
         {
             "type": "pear",
             "url": "http://pear.php.net",
             "vendor-alias": "pear"
         }
-    },
+    ],
     "autoload": {
         "psr-0": {"Phiend": "extra/"}
     }
