@@ -5,8 +5,8 @@
         "mpdf/mpdf":                    "dev-master",
         "phpexcel/phpexcel":            "1.7.7",
         "smarty/smarty":                "3.1.11",
-        "pear-pear/MDB2":               ">=2.4.1",
-        "pear-pear/MDB2_Driver_mysqli": ">=1.4.1"
+        "MDB2":               ">=2.4.1",
+        "MDB2_Driver_mysqli": ">=1.4.1"
     },
     "repositories": [
         {
