@@ -1,18 +1,21 @@
 {
-    "name" : "ketchup007/phiend",
+    "name" : "phiend",
     "version" : "0.3.3",
     "require" : {
-        "phpexcel/phpexcel":            "1.7.7",
-        "smarty/smarty":                "3.1.11",
-        "MDB2":               ">=2.4.1",
-        "MDB2_Driver_mysqli": ">=1.4.1"
+        "phpexcel/phpexcel":        "1.7.7",
+        "smarty/smarty":            "3.1.11",
+        "MDB2":                     ">=2.4.1",
+        "MDB2_Driver_mysqli":       ">=1.4.1"
     },
-    "repositories": [
-        {
-            "type": "pear",
-            "url": "http://pear.php.net"
+    "repositories": {
+        "pear php net": {
+	            "pear": {
+	                "url": "http://pear.php.net/",
+	                "url": "http://de.pear.php.net/",
+	                "url": "http://us.pear.php.net/"
+	            }
         }
-    ],
+    },
     "autoload": {
         "psr-0": {"Phiend": "extra/"}
     }
