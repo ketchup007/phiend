@@ -1,7 +1,16 @@
 {
     "name" : "ketchup007/phiend",
     "version" : "0.3.3",
-    "require" : {},
+    "require" : {
+        "smarty/smarty": "3.1.11",
+        "pear-pear2/MDB2": "*"
+    },
+    "repositories": [
+        {
+            "type": "pear",
+            "url": "http://pear2.php.net"
+        }
+    ],
     "autoload": {
         "psr-0": {"Phiend": "extra/"}
     }

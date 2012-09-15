@@ -21,7 +21,7 @@ class updateDB extends Script {
 	}
 	
 	function migrate($from, $to) {
-      if (parent :: getDBVersion() != $from) throw new Exception("By wykonac ta operacje DB musi byc w wersji 6");
+      if (parent :: getDBVersion() != $from) throw new Exception("By wykonac ta operacje DB musi byc w wersji $from");
 
       parent :: setDBVersion($to);
       
