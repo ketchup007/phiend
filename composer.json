@@ -1,0 +1,19 @@
+{
+    "name": "ketchup007/phiend",
+    "type": "library",
+    "keywords": ["framework"],
+    "homepage": "https://github.com/ketchup007/phiend",
+    "license": "LGPL-3.0",
+    "authors": [
+        {
+            "name": "Łukasz Łęcki",
+            "email": "lukasz.lecki@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3"
+    },
+    "autoload": {
+        "classmap": ["Action.class.php"]
+    }
+}
