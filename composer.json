@@ -5,7 +5,7 @@
       	"php":                                   ">=5.3.0",
         "smarty/smarty":                         "3.1.11",
         "phpexcel/phpexcel":                     "1.7.7",
-        "mpdf/mpdf":                             "master",
+        "mpdf/mpdf":                             "dev-master",
         "pear-pear.php.net/pear":                ">=1.9.4",
         "pear-pear.php.net/Log":                 ">=1.12.7",
         "pear-pear.php.net/Mail":                ">=1.2.0",
