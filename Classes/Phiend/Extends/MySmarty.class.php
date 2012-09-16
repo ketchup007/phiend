@@ -1,7 +1,8 @@
 <?php
 
 // load Smarty library
-require_once SMARTY_DIR . 'Smarty.class.php';
+/* require_once SMARTY_DIR . 'Smarty.class.php'; */
+namespace Phiend\Extends;
 
 class MySmarty extends Smarty {
 

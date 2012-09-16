@@ -214,7 +214,7 @@ class ActionController {
 		}
 		
 		if ($this->_authConfig['use-auth'] == true) {
-			include_once PHIEND_DIR . 'AuthManager.class.php';
+/* 			include_once PHIEND_DIR . 'AuthManager.class.php'; */
 			//perform authentication
 			if (!isset($this->_auth)) {
 				$this->_auth = new AuthManager($this->_sessionConfig, $this->_authConfig);

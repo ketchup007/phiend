@@ -1,7 +1,10 @@
 <?php
 
+/*
 require_once LIB_DIR  . 'Table.class.php';
 require_once PEAR_DIR . 'Console/ProgressBar.php';
+*/
+namespace Phiend\Extends;
 
 include( '../../private/defined.php');                 // Pobranie stalych aplikacji (uzytkownika)
 

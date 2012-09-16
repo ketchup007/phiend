@@ -1,5 +1,6 @@
 <?php
-require_once LIB_DIR . 'MyAction.class.php';
+/* require_once LIB_DIR . 'MyAction.class.php'; */
+namespace Phiend\Extends;
 
 class Action_Kasuj extends MyAction {
 		var $id_name = "";

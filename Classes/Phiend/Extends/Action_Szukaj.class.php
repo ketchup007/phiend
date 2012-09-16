@@ -1,8 +1,11 @@
 <?php
+/*
 require_once LIB_DIR . 'MySmarty.class.php';
 require_once LIB_DIR . 'MyExcel.class.php';
 require_once LIB_DIR . 'MyPHPExcel.class.php';
 require_once LIB_DIR . 'MyAction.class.php';
+*/
+namespace Phiend\Extends;
 
 class Action_Szukaj extends MyAction {
 

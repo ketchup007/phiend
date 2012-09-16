@@ -4,7 +4,7 @@ define('PREFIX' , '../../'); // Ustala sciezke poczatkowa
 include( '../config/defined.php'); // Pobranie stalych aplikacji
 //include( '../defined.php');                            // Pobranie konfiguracji
 
-require_once LIB_DIR . 'Script.class.php';
+namespace Phiend\Extends;
 
 class updateDB extends Script {
 

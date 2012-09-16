@@ -1,5 +1,6 @@
 <?php
-require_once LIB_DIR . 'Table.class.php';
+
+namespace Phiend\Extends;
 
 class MyAction extends Table {
 	
