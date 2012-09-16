@@ -31,9 +31,8 @@ class ConfigParser {
 	 *
 	 * Initializes tables with default values.
 	 */
-	function ConfigParser() {
-		global $_phiend_defaultTagContent, $_phiend_defaultAction, $_phiend_defaultAuthDriver,
-			$_phiend_defaultLogDriver;
+	function __constructor() {
+		global $_phiend_defaultTagContent, $_phiend_defaultAction, $_phiend_defaultAuthDriver, $_phiend_defaultLogDriver;
 		
 		$this->_disclaimer = "<?php\n\n" .
 			"/*****************************************************************\n" .
