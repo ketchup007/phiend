@@ -2,16 +2,20 @@
     "name" : "phiend",
     "version" : "0.3.3",
     "require" : {
-        "phpexcel/phpexcel":        "1.7.7",
-        "smarty/smarty":            "3.1.11",
-        "pear/MDB2":                     ">=2.4.1",
-        "pear/MDB2_Driver_mysqli":       ">=1.4.1"
+        "phpexcel/phpexcel":                     "1.7.7",
+        "smarty/smarty":                         "3.1.11",
+        "pear-pear.php.net/pear":                ">=1.9.4",
+        "pear-pear.php.net/Log":                 ">=1.12.7",
+        "pear-pear.php.net/Mail":                ">=1.2.0",
+        "pear-pear.php.net/Console_ProgressBar": "0.5.2beta",
+        "pear-pear.php.net/MDB2":                "2.5.0b3",
+      	"pear-pear.php.net/MDB2_Driver_mysqli":  "1.5.0b3",
     },
     "repositories": [
         {
             "type": "pear",
             "url": "http://pear.php.net",
-            "vendor-alias": "pear"
+            "vendor": "pear"
         }
     ],
     "autoload": {
