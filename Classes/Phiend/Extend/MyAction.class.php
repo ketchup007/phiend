@@ -1,6 +1,6 @@
 <?php
 
-namespace Phiend\Extends;
+namespace Phiend\Extend;
 
 class MyAction extends Table {
 	

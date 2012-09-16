@@ -1,6 +1,6 @@
 <?php
 /* require_once LIB_DIR . 'MyAction.class.php'; */
-namespace Phiend\Extends;
+namespace Phiend\Extend;
 
 class Action_WczytajListe extends MyAction {
 
