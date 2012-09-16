@@ -16,7 +16,7 @@
     "repositories": [
         {
             "type": "pear",
-            "url":  "pear.php.net",
+            "url":  "pear.php.net"
         }
     ],
     "autoload": {
