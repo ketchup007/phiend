@@ -7,7 +7,7 @@ namespace Phiend;
  * @version $Id: ConfigParser.class.php,v 1.9 2003/11/30 20:04:42 cryonax Exp $
  */
 
-require_once PHIEND_DIR . 'ParserConstants.php';
+/* require_once PHIEND_DIR . 'ParserConstants.php'; */
 
 /**
  * The configuration file parser.

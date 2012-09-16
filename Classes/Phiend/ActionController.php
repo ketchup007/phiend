@@ -137,7 +137,7 @@ class ActionController {
 		) {
 			//create actions config
 /* 			include_once PHIEND_DIR . 'ConfigParser.class.php'; */
-			$configParser = new Phiend\ConfigParser();
+			$configParser = new ConfigParser();
 			$configParser->parse();
 			trigger_error('Configuration file parsed', E_USER_NOTICE);
 		}
