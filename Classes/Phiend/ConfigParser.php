@@ -593,7 +593,7 @@ class ConfigParser {
 						$outGlobal .= " (isset(\$_GET['" . $match['name'] . "']) && (\$_GET['" . $match['name'] . "'] == '" . $match['value'] . "'))";
 						break;
 				}
-				$outGlobal .= " {\n\t\   = '" . $action[_PHIEND_TAG_NAME] . "';\n";
+				$outGlobal .= " {\n\t\$actionName   = '" . $action[_PHIEND_TAG_NAME] . "';\n";
 			}
 		}
 		$outGlobal .= "}\n\n";
