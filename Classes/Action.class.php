@@ -1,4 +1,6 @@
 <?php
+namespace Phiend;
+
 /**
  * @package phiend
  * @author Maciej Jarzebski
