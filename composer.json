@@ -14,6 +14,9 @@
         "pear-pear.php.net/MDB2_Driver_mysqli":  "1.5.0b3"
     },
     "autoload": {
-        "psr-0": {"Phiend": "Classes/"}
+        "psr-0": {
+            "Phiend": "Classes/"
+        },
+        "files": ["ParserConstants.php"]
     }
 }

@@ -97,7 +97,7 @@ class ActionController {
 	 *
 	 * Initializes basic things. Does not do any real work.
 	 */
-	function ActionController() {
+	function __constructor() {
 		
 		$GLOBALS['_phiend_actionController'] = & $this;
 		
