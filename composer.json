@@ -15,8 +15,7 @@
     },
     "autoloader": {
         "psr-0": {
-            "Phiend": ".",
-            "Phiend_Extra": "extra/"
+            "Phiend": "."
         }
     }
 }
