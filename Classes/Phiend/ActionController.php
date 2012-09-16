@@ -97,7 +97,7 @@ class ActionController {
 	 *
 	 * Initializes basic things. Does not do any real work.
 	 */
-	function __constructor() {
+	function __construct() {
 		
 		$GLOBALS['_phiend_actionController'] = & $this;
 		
@@ -141,6 +141,8 @@ class ActionController {
 			$configParser->parse();
 			trigger_error('Configuration file parsed', E_USER_NOTICE);
 		}
+		
+		print_r($this);
 
 		include_once CONFIG_OUTPUT_DIR . 'phiend-config.php';
 		//include_once CONFIG_OUTPUT_DIR . 'log-drivers.php';
