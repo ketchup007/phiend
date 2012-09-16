@@ -1,4 +1,7 @@
 <?php
+
+namespace Phiend\auth-drivers;
+
 /**
  * @package phiend
  * @author Maciej Jarzebski
@@ -25,7 +28,7 @@ class TxtAuthDriver {
 	 *  - file: name of file to use (must be in {CODE_DIR}/config/), required
 	 *  - encryption: 'md5' or 'none', optional (if not given, no encryption will be used)
 	 */
-	function TxtAuthDriver($params) {
+	function __construct($params) {
 		$this->_useMD5 = false;
 		if (isset($params['encryption'])) {
 			if (strcmp($params['encryption'], 'md5') == 0) {

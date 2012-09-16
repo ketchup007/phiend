@@ -1,4 +1,7 @@
 <?php
+
+namespace Phiend\log-drivers;
+
 /**
  * @package phiend
  * @author Maciej Jarzebski
@@ -17,7 +20,7 @@ class TxtLogDriver {
 	 * @param array $params Contains parameters for this log driver:
 	 *  - file: name of file to use, should include full file path
 	 */
-	function TxtLogDriver($params) {
+	function __construct($params) {
 		if (isset($params['file'])) {
 			$this->_file = $params['file'];
 		} else {

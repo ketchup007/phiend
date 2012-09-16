@@ -452,7 +452,7 @@ class ConfigParser {
 		$outAuth = $this->_disclaimer;
 		foreach ($this->_authDrivers as $authDriver) {
 			$rootDir = $authDriver[_PHIEND_TAG_USER_SUPPLIED] ? 'CODE_DIR' : 'PHIEND_DIR';
-			$outAuth .= "include_once " . $rootDir . " . 'auth-drivers/" . $authDriver[_PHIEND_TAG_NAME] . ".class.php';\n";
+			$outAuth .= "include_once " . $rootDir . " . 'auth-drivers/" . $authDriver[_PHIEND_TAG_NAME] . ".php';\n";
 			$outAuth .= "\$params = array(\n";
 			foreach ($authDriver[_PHIEND_TAG_PARAM] as $paramName => $paramValue) {
 				$outAuth .= "\t'" . $paramName . "' => '" . $paramValue . "',\n";
@@ -469,7 +469,7 @@ class ConfigParser {
 		$outLog = "";
 		foreach ($this->_logDrivers as $logDriver) {
 			$rootDir = $logDriver[_PHIEND_TAG_USER_SUPPLIED] ? 'CODE_DIR' : 'PHIEND_DIR';
-			$outLog .= "include_once " . $rootDir . " . 'log-drivers/" . $logDriver[_PHIEND_TAG_NAME] . ".class.php';\n";
+			$outLog .= "include_once " . $rootDir . " . 'log-drivers/" . $logDriver[_PHIEND_TAG_NAME] . ".php';\n";
 			$outLog .= "\$params = array(\n";
 			foreach ($logDriver[_PHIEND_TAG_PARAM] as $paramName => $paramValue) {
 				$outLog .= "\t'" . $paramName . "' => '" . $paramValue . "',\n";

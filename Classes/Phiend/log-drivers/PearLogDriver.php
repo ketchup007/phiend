@@ -5,7 +5,9 @@
  * @version $Id: PearLogDriver.class.php,v 1.2 2003/11/11 09:55:53 cryonax Exp $
  */
 
-require_once 'Log.php';
+namespace Phiend\auth-drivers;
+
+/* require_once 'Log.php'; */
 
 /**
  * Log driver which uses PEAR Log.
@@ -20,7 +22,7 @@ class PearLogDriver {
 	 *  - type: log type for PEAR Log
 	 *  - name: log name for PEAR Log
 	 */
-	function PearLogDriver($params) {
+	function __construct($params) {
 		$this->_params = $params;
 		$this->_checkParam('type');
 		$this->_checkParam('name');

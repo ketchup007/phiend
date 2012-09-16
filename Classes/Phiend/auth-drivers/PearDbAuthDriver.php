@@ -5,6 +5,8 @@
  * @version $Id: PearDbAuthDriver.class.php,v 1.1 2003/11/11 12:44:23 cryonax Exp $
  */
 
+namespace Phiend\auth-drivers;
+
 require_once 'DB.php';
  
 /**
@@ -25,7 +27,7 @@ class PearDbAuthDriver {
 	 *  - passwdCol: column containing passwords (encoded with MD5), default is "passwd"
 	 *  - rolesCol: column containing user roles, default is "roles"
 	 */
-	function PearDbAuthDriver($params) {
+	function __construct($params) {
 
 		$this->_readParam($params, 'dsn', '_dsn');
 		$this->_readParam($params, 'table', '_table');
