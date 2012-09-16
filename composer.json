@@ -1,6 +1,6 @@
 {
     "name" : "phiend",
-    "version" : "0.3.3",
+    "version" : "0.4.0",
     "require" : {
       	"php":                                   ">=5.3.0",
         "smarty/smarty":                         "3.1.11",
