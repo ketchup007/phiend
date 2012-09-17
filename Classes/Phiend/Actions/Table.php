@@ -2,7 +2,7 @@
 /* require_once PHIEND_DIR . 'Action.class.php'; */
 /* require_once PEAR_DIR . 'MDB2.php'; */
 /* require_once PEAR_DIR . 'Log.php'; */
-namespace Phiend\Actions;
+namespace Phiend;
 
 class Table extends Action {
     private $table_name;
