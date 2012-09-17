@@ -1,8 +1,8 @@
 <?php
 
-namespace Phiend\Actions;
+/* namespace Phiend\Actions; */
 
-class MyAction extends Table {
+class MyAction extends Phiend\Actions\Table {
 	
 		var $_return = null;
 

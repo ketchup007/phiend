@@ -1,8 +1,8 @@
 <?php
 /* require_once LIB_DIR . 'MyAction.class.php'; */
-namespace Phiend\Actions;
+/* namespace Phiend\Actions; */
 
-class WczytajListe extends MyAction {
+class WczytajListe extends Phiend\Actions\MyAction {
 
     private $name = null;
 
