@@ -142,8 +142,6 @@ class ActionController {
 			trigger_error('Configuration file parsed', E_USER_NOTICE);
 		}
 		
-		print_r($this);
-
 		include_once CONFIG_OUTPUT_DIR . 'phiend-config.php';
 		//include_once CONFIG_OUTPUT_DIR . 'log-drivers.php';
 		
