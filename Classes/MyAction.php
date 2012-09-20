@@ -1,7 +1,5 @@
 <?php
 
-/* namespace Phiend\Actions; */
-
 class MyAction extends Table {
 	
 		var $_return = null;

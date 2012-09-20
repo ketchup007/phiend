@@ -5,8 +5,6 @@
  * @version $Id: PearDbAuthDriver.class.php,v 1.1 2003/11/11 12:44:23 cryonax Exp $
  */
 
-namespace Phiend\auth-drivers;
-
 require_once 'DB.php';
  
 /**

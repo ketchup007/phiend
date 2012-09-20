@@ -5,6 +5,7 @@
 /* namespace Phiend\Actions; */
 
 class Table extends Action {
+
     private $table_name;
 
   // Przechowuja informacje o tabelach systemu i o ich powiazaniach

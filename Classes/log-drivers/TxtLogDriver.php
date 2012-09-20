@@ -1,7 +1,5 @@
 <?php
 
-namespace Phiend\log-drivers;
-
 /**
  * @package phiend
  * @author Maciej Jarzebski

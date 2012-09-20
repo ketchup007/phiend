@@ -5,7 +5,6 @@
  * @version $Id: PearLogDriver.class.php,v 1.2 2003/11/11 09:55:53 cryonax Exp $
  */
 
-namespace Phiend\auth-drivers;
 
 /* require_once 'Log.php'; */
 

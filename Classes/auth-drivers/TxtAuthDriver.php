@@ -1,7 +1,5 @@
 <?php
 
-namespace Phiend\auth-drivers;
-
 /**
  * @package phiend
  * @author Maciej Jarzebski
