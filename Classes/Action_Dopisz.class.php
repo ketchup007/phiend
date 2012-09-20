@@ -1,7 +1,5 @@
 <?php
 
-namespace Phiend\Extends;
-
 class Action_Dopisz extends MyAction {
 
     function init($name = null) {

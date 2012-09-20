@@ -4,8 +4,6 @@ define('PREFIX' , '../../'); // Ustala sciezke poczatkowa
 include( '../config/defined.php'); // Pobranie stalych aplikacji
 //include( '../defined.php');                            // Pobranie konfiguracji
 
-namespace Phiend\Extends;
-
 class updateDB extends Script {
 
     private $backup = null;

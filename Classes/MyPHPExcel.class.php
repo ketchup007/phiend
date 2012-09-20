@@ -1,7 +1,6 @@
 <?php
 
 /* require_once PHPEXCEL_DIR . 'PHPExcel.php'; */
-namespace Phiend\Extends;
 
 class MyPHPExcel extends PHPExcel {
 
