@@ -84,7 +84,10 @@ class Action_WczytajListe extends MyAction {
 		function isFilter($nazwa) {
 				$vars = & $GLOBALS["_" . ACTION_METHOD];
 				// Sprawdzenie, czy filtr jest ustawiany
-				if (isSet($vars[$nazwa]) && strlen($vars[$nazwa]) > 0) parent :: setSearch($nazwa, $vars[$nazwa]);
+/* 				if (isSet($vars[$nazwa]) && strlen($vars[$nazwa]) > 0) parent :: setSearch($nazwa, $vars[$nazwa]); */
+        // Zlikwidowalem sprawdzanie ustawienia filtra
+        parent :: setSearch($nazwa, $vars[$nazwa]);
+        
 				return parent :: getSearch($nazwa);
 		}
 		
