@@ -15,7 +15,7 @@
     },
     "autoload": {
         "psr-0": {
-            "Phiend": "Classes/"
+            "classmap": ["Classes/"]
         },
         "files": ["ParserConstants.php"]
     }
