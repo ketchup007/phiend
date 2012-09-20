@@ -14,9 +14,7 @@
         "pear-pear.php.net/MDB2":                "2.5.0b3"
     },
     "autoload": {
-        "psr-0": {
-            "classmap": ["Classes/"]
-        },
+        "classmap": ["Classes/"],
         "files": ["ParserConstants.php"]
     }
 }
