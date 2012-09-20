@@ -2,7 +2,7 @@
 
 /* namespace Phiend\Actions; */
 
-class MyAction extends Phiend\Actions\Table {
+class MyAction extends Table {
 	
 		var $_return = null;
 

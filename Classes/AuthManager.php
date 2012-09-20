@@ -1,5 +1,5 @@
 <?php
-namespace Phiend;
+/* namespace Phiend; */
 
 /**
  * @package phiend
