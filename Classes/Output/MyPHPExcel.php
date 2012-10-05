@@ -26,6 +26,7 @@ class MyPHPExcel extends PHPExcel {
 
         // DANE
         $dane = $GLOBALS['_phiend_actionController']->getUserVar('dane');
+        print_r($GLOBALS);
 
         // CENTROWANIE
        	$this->getActiveSheet()->getStyle("A:ZZ")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
