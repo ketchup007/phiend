@@ -1,8 +1,4 @@
 <?php
-define('PREFIX' , '../../'); // Ustala sciezke poczatkowa 
-
-include( '../config/defined.php'); // Pobranie stalych aplikacji
-//include( '../defined.php');                            // Pobranie konfiguracji
 
 class updateDB extends Script {
 

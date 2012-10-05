@@ -1,12 +1,5 @@
 <?php
 
-/*
-require_once LIB_DIR  . 'Table.class.php';
-require_once PEAR_DIR . 'Console/ProgressBar.php';
-*/
-
-include( '../../private/defined.php');                 // Pobranie stalych aplikacji (uzytkownika)
-
 class Script extends Table {
     private $bar;
     private $starttime;
