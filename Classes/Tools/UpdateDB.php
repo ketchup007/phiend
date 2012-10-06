@@ -1,6 +1,6 @@
 <?php
 
-class updateDB extends Script {
+class UpdateDB extends Script {
 
     private $backup = null;
 
