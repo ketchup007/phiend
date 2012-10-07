@@ -51,7 +51,8 @@ class MySmarty extends Smarty {
         $this->config_dir   = CONFIG_DIR;
 
         $this->config_booleanize = true;
-        $this->assign('app_name',       'Centralny System Obsługi Zgłoszeń');
+        $this->assign('app_name',       APP_NAME);
+        $this->assign('app_version',    APP_VERSION);
         $this->assign('db_version',     $GLOBALS['_phiend_actionController']->getUserVar('db_version'));
         $this->assign('user',           $GLOBALS['_phiend_actionController']->getUserVar('user'));
         $this->assign('login',          $GLOBALS['_phiend_actionController']->getUserVar('login'));
