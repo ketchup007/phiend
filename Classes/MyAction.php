@@ -104,12 +104,12 @@ class MyAction extends Table {
 			$this->cache('savepoint', $return);
 		}
 		
-		function generateMenu() {
+		function generateMenu($force = false) {
 			// Sprawdzenie, czy juz sa wygenerowane
 			$menu = $this->get('menu');
 			$_menu = array ();
 			if (!is_array($menu)) $menu = array();
-			if (count($menu) == 0) {
+			if (count($menu) == 0 || $force) {
 				require CONFIG_DIR . "config.php";
 				foreach ($menu as $pozycja) {
 					if (strpos($this->get('roles'), $pozycja[3]) !== false) {
