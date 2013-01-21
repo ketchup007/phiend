@@ -270,7 +270,7 @@ class Table extends Action {
 */
 
         // Gdy brak polaczenia, polacz sie
-        if (!is_a($this->db, "MDB2_Driver_mysql")) {
+        if (!is_a($this->db, "MDB2_Driver_mysqli")) {
         
             $options = array (
                 'debug' => 1,
@@ -296,7 +296,7 @@ class Table extends Action {
 //          $this->table_fields = $this->getAllFields();
             if (FORCE_LATIN2 == 1) $res = & $db->query('SET NAMES latin2');
             if (FORCE_UTF8 == 1)   $res = & $db->query('SET NAMES UTF8');
-/*             $this->db->query("SET autocommit=0"); */
+            $this->db->query("SET autocommit = 0");
 
             $this->komunikat("Connection", "Polaczenie z baza danych. [OK]");
         }
