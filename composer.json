@@ -3,7 +3,7 @@
     "version" : "0.4.0",
     "require" : {
         "php":                                   ">=5.3.0",
-        "smarty/smarty":                         "3.1.*",
+        "smarty/smarty":                         "3.1.12",
         "phpexcel/phpexcel":                     "1.7.7",
         "mpdf/mpdf":                             "dev-master",
         "pear-pear.php.net/pear":                ">=1.9.4",
