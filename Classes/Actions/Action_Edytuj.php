@@ -12,7 +12,7 @@ class Action_Edytuj extends MyAction {
   		// Uruchomienie silnika Smarty
   		$this->smarty = new MySmarty;
   		$this->view('error');
-  		parent :: generateMenu();
+/*   		parent :: generateMenu(); */
   
       $dane = parent :: get('dane'); 
       

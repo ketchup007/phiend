@@ -6,7 +6,7 @@ class Action_Popraw extends MyAction {
     function init($name = null) {
         if ($name == null) $name = ucfirst($this->getSearch('rodzaj'));
 
-		$id_name = $this->getNameOfPrimaryKey(strtolower($name));
+    		$id_name = $this->getNameOfPrimaryKey(strtolower($name));
         $id      = parent::findId($id_name);
 
         // Zaladowanie wiersza z tabeli

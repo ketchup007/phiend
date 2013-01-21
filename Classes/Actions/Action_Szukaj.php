@@ -1,11 +1,4 @@
 <?php
-/*
-require_once LIB_DIR . 'MySmarty.class.php';
-require_once LIB_DIR . 'MyExcel.class.php';
-require_once LIB_DIR . 'MyPHPExcel.class.php';
-require_once LIB_DIR . 'MyAction.class.php';
-*/
-/* namespace Phiend\Extends; */
 
 class Action_Szukaj extends MyAction {
 
@@ -15,21 +8,9 @@ class Action_Szukaj extends MyAction {
         // Ustalenie metody prezentacji danych - ustalenie silnika wyswietlania
         $engine = 'Smarty';
         if (isSet($_GET['engine'])) $engine = $_GET['engine'];
-        
-/*
-        print($engine);
-        print_r(parent :: get('dane'));
-*/
-        
-        // Uruchomienie silnika Smarty
-/*         $this->smarty = new MySmarty; */
-/*         $this->smarty = new "My$engine"; */
-        
+                
         $reflection_class = new ReflectionClass("My$engine");
         $this->smarty = $reflection_class->newInstanceArgs();
-/*         print_r($this->smarty); */
-        
-        parent :: generateMenu();
     }
 
     function assign($name, $variable) {

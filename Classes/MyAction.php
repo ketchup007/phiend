@@ -20,7 +20,7 @@ class MyAction extends Table {
 	/*     print_r($action); */
 		    array_push($debug, $action);
 	  }
-	  
+       	  
 		function clearFilters() {
 			//print "CZYSZCZÊ FILTRY PRZESZUKIWANIA<br>\n";
 			$this->clear('filters');
@@ -61,7 +61,7 @@ class MyAction extends Table {
 				$this->_addFilter('global', $name, $filtr);
 		}
 	
-		function _addFilter($section, $name, $filter) {
+		private function _addFilter($section, $name, $filter) {
 				$filtry = $this->_getUserVar('filters');
 				if (is_array($filtry) == false)
 					$filtry = array ();
@@ -88,7 +88,7 @@ class MyAction extends Table {
 				return array_merge($this->_getFilters('global'), $this->_getFilters($section));
 		}
 	
-		function _getFilters($section) {
+		private function _getFilters($section) {
 			$filtry = $this->get('filters');
 			if (!is_array($filtry[$section]))
 				$filtry[$section] = array ();
@@ -103,23 +103,7 @@ class MyAction extends Table {
 		    // Tworzenie punktu po ktorym bedzie nastepowal powrot
 			$this->cache('savepoint', $return);
 		}
-		
-		function generateMenu($force = false) {
-			// Sprawdzenie, czy juz sa wygenerowane
-			$menu = $this->get('menu');
-			$_menu = array ();
-			if (!is_array($menu)) $menu = array();
-			if (count($menu) == 0 || $force) {
-				require CONFIG_DIR . "config.php";
-				foreach ($menu as $pozycja) {
-					if (strpos($this->get('roles'), $pozycja[3]) !== false) {
-						$_menu[$pozycja[0]][$pozycja[2]] = $pozycja;
-					}
-				}
-				$this->set('menu', $_menu, true);
-			}
-		}
-		
+				
 		function cache($label, $variable=null) {
 			$this->_setUserVar($label, $variable, true);
 			return $variable;
@@ -185,7 +169,19 @@ class MyAction extends Table {
 		function is($label) {
 			return array_key_exists($label, $GLOBALS['_phiend_actionController']);
 		}
+
+		function addData($dane=array(null, null)) {
+			list ($ilosc, $wiersze) = $dane;
+			$this->_setUserVar('ilosc', $ilosc);
+			$this->_setUserVar('dane', $wiersze);
+		}
 	
+		function dbg($name) {
+			$dbg = "<pre>" . str_replace("\n", "<br>", print_r($this->get($name), true)) . "</pre>";
+			$this->view("dbg_$name", "$name<br>$dbg");
+		}
+		
+	  // XXX POWIAZANIE Z BAZA DANYCH
 		function LoadFirstRow($table_name, $where = null, $order = null, $limit = null) {
 			$this->setTable($table_name);
 			$wynik = parent :: LoadRows($where, $order, $limit);
@@ -209,40 +205,32 @@ class MyAction extends Table {
 			$this->setTable($table_name);
 			$this->deleteRows($where);
 		}
-	
+	  
 		function save($table_name, $data) {
 			$this->setTable($table_name);
 			return $this->saveRow($data);
 		}
 	
-		function addData($dane=array(null, null)) {
-			list ($ilosc, $wiersze) = $dane;
-			$this->_setUserVar('ilosc', $ilosc);
-			$this->_setUserVar('dane', $wiersze);
-		}
-	
-		function dbg($name) {
-			$dbg = "<pre>" . str_replace("\n", "<br>", print_r($this->get($name), true)) . "</pre>";
-			$this->view("dbg_$name", "$name<br>$dbg");
-		}
-		
 		function start_action() {
   		    // Stworzenie unikatowego wpisu
+  		    parent :: query('BEGIN');
   		    $blokada['hash'] = hash('md5', rand());
   		    $this->save('aplikacja_blokady', $blokada);
+  		    parent :: query('COMMIT');
   		    return $blokada['hash'];
 		}
 
 		function finish_action($hash) {
-
 		    // Sprawdzenie czy taki hash jest
 		    $this->query("LOCK TABLES aplikacja_blokady WRITE");
 		    $wiersz = $this->LoadRows('aplikacja_blokady', "hash = '$hash'");
+/* 		    print_r($wiersz); */
 		    $this->delete('aplikacja_blokady', "hash = '$hash'");
 		    // Skasowanie starych zapisow - z przed godziny
 		    $this->query("UNLOCK TABLES");
 		    
-		    $this->delete('aplikacja_blokady', "created < TIMESTAMPADD(HOUR, -1, '".$wiersz[0]['created']."')");
+/* 		    $this->delete('aplikacja_blokady', "created < TIMESTAMPADD(HOUR, -1, '".$wiersz[0]['created']."')"); */
+		    $this->delete('aplikacja_blokady', "created < TIMESTAMPADD(HOUR, -24, NOW())");
 
 		    if (count($wiersz) == 1) return true;
     		else return false;

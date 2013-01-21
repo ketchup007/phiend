@@ -23,7 +23,7 @@ class Script extends Table {
         
         
         // Dodanie sciezki PEAR
-        set_include_path(PEAR_DIR . PATH_SEPARATOR . get_include_path());
+/*         set_include_path(PEAR_DIR . PATH_SEPARATOR . get_include_path()); */
 /*         set_include_path(get_include_path() . PATH_SEPARATOR . PEAR_DIR); */
         echo 'PATH: '. get_include_path() . "\n";
 

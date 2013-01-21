@@ -9,7 +9,7 @@ class Action_Dopisz extends MyAction {
         parent :: set('dane', null);
 
         // stworzenie unikalnej akcji - zabezpieczenie przed powtorzeniami
-        parent :: start_action();
+/*         parent :: start_action(); */
 
     }
     

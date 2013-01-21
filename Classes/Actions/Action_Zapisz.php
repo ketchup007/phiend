@@ -11,22 +11,38 @@ class Action_Zapisz extends MyAction {
         if ($name == null)
             $name = ucfirst($this->getSearch('rodzaj')) . ucfirst($this->getSearch('suffix'));
         
-
         $id_name = $this->getNameOfPrimaryKey(strtolower($name));
 
         $id = parent :: findId($id_name);
 
         $this->name = $name;
         $this->dane_new = parent :: get('dane');
-        if (strlen($id) > 0) $this->dane_old = parent :: LoadRow(strtolower($name), $id);
+        if (class_exists($this->name)) {
+            // NOWE PODEJSCIE
+            if (strlen($id) > 0) $this->dane_old = new $name($id);
 
-        // Rozpoczecie transakcji
-        $this->begin();
-
-        // Zapisanie podstawowego rekordu 
-        if ($save)
-          return $this->save(strtolower($name), parent :: get('dane'));
-        else return array();
+            // Rozpoczecie transakcji
+            $this->begin();
+    
+            // Zapisanie podstawowego rekordu 
+            if ($save) {
+              $instance = new $name();
+              return $instance->setAllData(parent :: get('dane'))->save();
+            }
+            else return null;
+        } else {
+            // STARE PODEJSCIE - BEZ MODELI
+            if (strlen($id) > 0) $this->dane_old = parent :: LoadRow(strtolower($name), $id);
+    
+            // Rozpoczecie transakcji
+            $this->begin();
+    
+            // Zapisanie podstawowego rekordu 
+            if ($save)
+              return $this->save(strtolower($name), parent :: get('dane'));
+            else return array();
+        }
+        
     }
 
     function save($table_name, $data) {
@@ -63,7 +79,8 @@ class Action_Zapisz extends MyAction {
             $name = ucfirst($this->getSearch('rodzaj')) . ucfirst($this->getSearch('suffix'));
 
         // Zakonczenie transakcji
-        parent :: end($this->finish_action($this->dane_new['unique_hash']));
+        $ok = $this->finish_action($this->dane_new['unique_hash']);
+        parent :: end($ok);
         
         $this->add_to_debuger();
         

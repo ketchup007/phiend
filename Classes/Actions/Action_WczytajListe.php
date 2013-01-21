@@ -7,6 +7,7 @@ class Action_WczytajListe extends MyAction {
     private $name = null;
 
 		function init($name=null) {
+/* 				print_r($_SESSION['search']); */
 		    parent :: setSavePoint(get_class($this));
 		    $this->name = $name;
 
@@ -29,6 +30,13 @@ class Action_WczytajListe extends MyAction {
 				// Ustalenie czy zmienila sie zakladka
 				$action = explode("_", $GLOBALS['_phiend_actionController']->_actionChain[count($GLOBALS['_phiend_actionController']->_actionChain) - 1]);
 
+/* 				print_r($GLOBALS); */
+/*
+				print_r(parent :: getSearch('rodzaj'));
+				print_r(strtolower($action[0]));
+				print_r(strcmp(strtolower($action[0]), parent :: getSearch('rodzaj')));
+*/
+/* 				print_r($_SESSION['search']); */
 				// Sprawdzenie czy bylo to samo
 				if (strcmp(strtolower($action[0]), parent :: getSearch('rodzaj')) != 0) {
 						parent :: clearFilters();
@@ -40,6 +48,7 @@ class Action_WczytajListe extends MyAction {
 						parent :: setSearch('typ', "");
 						parent :: setSearch('pierwszy', 0);
 				}
+/* 				print_r($_SESSION['search']); */
 
 				// ZMIANA ZAKLADKI
 				if (isSet ($_GET['typ'])) {
@@ -63,13 +72,15 @@ class Action_WczytajListe extends MyAction {
 				if (isset ($_GET['ord_by'])) {
 					parent :: addOrder($this->name, "$_GET[ord_by] $_GET[kierunek]");
 				}
+/* 				print_r($_SESSION['search']); */
 
 				// USTAWIENIE PARAMETROW POCZATKOWYCH
 				if (parent :: getSearch('pierwszy') == null) parent :: setSearch('pierwszy', 0);
+/* 				print_r($_SESSION['search']); */
 				
 				// ZALADOWANIE FILTROW
-				$this->setAllAvailableFilters();
-		
+				$this->setAllAvailableFilters();		
+/* 				print_r($_SESSION['search']); */
 		}
 
 		function setAllAvailableFilters() {
@@ -77,16 +88,22 @@ class Action_WczytajListe extends MyAction {
 				// Sprawdzenie, czy filtr jest ustawiany
 /* 				print_r($vars); */
 				foreach ($vars as $key=>$var) {
-				  if (preg_match("/filtr_/i", $key)) parent :: setSearch($key, $var);
+				  if (preg_match("/filtr_/i", $key)) {
+/* 				      print("\n<br/>ustawiam filtr: ".$key. "=>$var\n<br/>"); */
+    				  parent :: setSearch($key, $var);
+				  }
 				}
+/* 				print_r(parent :: getSearch()); */
 		}
 
 		function isFilter($nazwa) {
 				$vars = & $GLOBALS["_" . ACTION_METHOD];
+/* 				print_r($vars); */
+/* 				print_r($GLOBALS); */
 				// Sprawdzenie, czy filtr jest ustawiany
 /* 				if (isSet($vars[$nazwa]) && strlen($vars[$nazwa]) > 0) parent :: setSearch($nazwa, $vars[$nazwa]); */
         // Zlikwidowalem sprawdzanie ustawienia filtra
-        parent :: setSearch($nazwa, $vars[$nazwa]);
+        if (isSet($vars[$nazwa])) parent :: setSearch($nazwa, $vars[$nazwa]);
         
 				return parent :: getSearch($nazwa);
 		}
@@ -147,6 +164,7 @@ class Action_WczytajListe extends MyAction {
 
 		    // Zapisanie stanu filtrow
 		    parent :: cache('old_search', parent :: getSearch());
+/* 		    print_r(parent :: getSearch()); */
 
 		    if ($name != null) $this->name = $name;
 

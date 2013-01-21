@@ -112,6 +112,14 @@ class Action_Sprawdz extends MyAction {
         return true;
     }
 
+    function check_time($name, $data) {
+        if (!preg_match('/^\d{2}:\d{2}$/', $data)) {
+            $this->setFalse($name, "Niepoprawny czas!");
+            return false;
+        }
+        return true;
+    }
+
     function check_integer($name, $liczba) {
         if (!preg_match('/^\d+$/', $liczba)) {
             $this->setFalse($name, "Niepoprawny format liczby!");

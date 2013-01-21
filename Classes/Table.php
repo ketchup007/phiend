@@ -1,8 +1,4 @@
 <?php
-/* require_once PHIEND_DIR . 'Action.class.php'; */
-/* require_once PEAR_DIR . 'MDB2.php'; */
-/* require_once PEAR_DIR . 'Log.php'; */
-/* namespace Phiend\Actions; */
 
 class Table extends Action {
 
@@ -24,21 +20,6 @@ class Table extends Action {
         $this->db = null;
     }
 
-    // Konstruktor
-/*
-    function Table($table_name = "") {
-        $this->table_name = $table_name;
-        $this->db = null;
-        
-    }
-*/
-    
-/*
-    public function getTableInfo($table_name) {
-       $this->setTable($table_name);
-       return $this->tables_info[$table_name];
-    }
-*/
     function get_tables_info() {
         return $this->tables_info;
     }
@@ -277,53 +258,59 @@ class Table extends Action {
         return $sql;
     }
 
-  
-  // ?? Czy potrzebna ??
-/*
-    private function __refToJoin($ref) {
-        $pierwszy = true;
-        $sql .= "FROM $ref[from] ";
-        foreach ($ref['ref'] as $to) {
-            $sql .= " LEFT JOIN $to[to] USING ($to[fk]) ";
-        }
-        return $sql;
-    }
-*/
-
     // Metoda zwraca polaczenie z baza danych
     private function connection() {
 
-        $options = array (
-            'debug' => 1,
-            'portability' => MDB2_PORTABILITY_ALL
-        );
+        // SPRAWDZENIE CZY JUZ JEST JAKIES POLACZENIE W SESJI
+/*
+        if (is_a($_SESSION['established_connection'], "MDB2_Driver_mysql")) {
+            $this->db = $_SESSION['established_connection'];
+            print_r($this->db);
+        }
+*/
 
         // Gdy brak polaczenia, polacz sie
         if (!is_a($this->db, "MDB2_Driver_mysql")) {
-            $this->komunikat("Connection()", "Polaczenie z baza danych.");
-            $db = & MDB2 :: factory(DSN, $options);
+        
+            $options = array (
+                'debug' => 1,
+                'use_transactions' => 1
+/*                 'persistent' => 1, */
+/*                 'portability' => MDB2_PORTABILITY_ALL */
+            );
+
+/*             $db = & MDB2 :: factory(DSN, $options); */
+            $db = & MDB2 :: singleton(DSN, $options);
             if (PEAR :: isError($db)) {
                 $this->_error($db);
+                $this->komunikat("Connection", "Polaczenie z baza danych. [FAILED]");
                 return null;
             }
             
             $this->db = $db;
+/*             print_r($db); */
+            // Gdy połączenie, zapisz w sesji
+/*             $_SESSION['established_connection'] = $db; */
 
 
 //          $this->table_fields = $this->getAllFields();
             if (FORCE_LATIN2 == 1) $res = & $db->query('SET NAMES latin2');
             if (FORCE_UTF8 == 1)   $res = & $db->query('SET NAMES UTF8');
-            $this->db->query("SET autocommit=0");
+/*             $this->db->query("SET autocommit=0"); */
+
+            $this->komunikat("Connection", "Polaczenie z baza danych. [OK]");
         }
+/* print_r($this->db->connection); */
 
         return $this->db;
     }
 
     private function disconnect() {
         $db = $this->db;
-        if ($this->db != null) {
+
+        if ($db != null) {
             $db->disconnect();
-            $this->komunikat("Disconnect()", "Rozlaczenie z baza danych.");
+            $this->komunikat("Disconnect", "Rozlaczenie z baza danych.");
         }
         $this->db = null;
     }
@@ -331,26 +318,29 @@ class Table extends Action {
     private function _error($db_er) {
         $this->error = true;
         $komunikat = "<font class='error'>" . $db_er->getMessage() . "</font></br>" . $db_er->getCode() . "<br/><font class='info'>" . $db_er->getUserInfo() . "</font>";
-        $this->komunikat("Error()", $komunikat);
+        $this->komunikat("Error", $komunikat);
         $this->error_message = $komunikat;
         #$this->db = null;
     }
 
     private function komunikat($function, $komunikat) {
-//      trigger_error(date('Y-M-j h:i:s.u')." <b>$function</b>: <i>$komunikat</i>", E_USER_NOTICE);
-//echo " <b>$function</b>: <i>$komunikat</i> memory:". memory_get_usage() . "\n";
+/*         backtrace(); */
+/*       $conn_id = $this->db->connection; */
+      $conn_id = null;
+      $transakcja = '';
+      if ($this->db->inTransaction()) $transakcja = 'T';
 
       if(php_sapi_name() == 'cli' && empty($_SERVER['REMOTE_ADDR'])) {
         print(date('r')." $function: ".strip_tags($komunikat)."\n");
       } else {
-        trigger_error(date('r')." <b>$function</b>: <i>$komunikat</i>", E_USER_NOTICE);
+        trigger_error(date('r')." <b>$function($conn_id$transakcja)</b>: <i>$komunikat</i>", E_USER_NOTICE);
       }
     }
 
     private function log($ident, $linia) {
         $db = $this->Connection();
-        $this->komunikat("Log()", $linia);
-        $conf['db'] = $db;
+        $this->komunikat("Log", $linia);
+/*         $conf['db'] = $db; */
 //        $logger = & Log :: singleton('sql', 'logi', $ident, $conf);
 //        $logger->log($linia);
     }
@@ -418,9 +408,9 @@ class Table extends Action {
             if ($pola != FALSE) {
               $this->searchable[$table_name] = array();
               foreach ($pola as $pole) array_push($this->searchable[$table_name], rtrim($pole, "\n"));
-              $this->komunikat("setTable()", "$table_name - załadowano plik z listą pól");
+              $this->komunikat("setTable", "$table_name - załadowano plik z listą pól");
             } else
-              $this->komunikat("setTable()", "$table_name - brak pliku z listą pól do szukania");
+              $this->komunikat("setTable", "$table_name - brak pliku z listą pól do szukania");
         }
     }
 
@@ -433,11 +423,11 @@ class Table extends Action {
           $db->beginTransaction();
 /*           $db->query("START TRANSACTION"); */
 /*           $this->query("START TRANSACTION"); */
-          $this->komunikat("begin()", "Rozpoczynam transakcję");
+          $this->komunikat("begin", "Rozpoczynam transakcję");
         } else {
-          $this->komunikat("begin()", "DB nie wspiera transakcji");
+          $this->komunikat("begin", "DB nie wspiera transakcji");
         }
-/*         if ($db->inTransaction()) $this->komunikat("begin()", "jestem w transakcji"); */
+/*         if ($db->inTransaction()) $this->komunikat("begin", "jestem w transakcji"); */
         
         $this->error = false;
         $this->error_message = "";
@@ -445,7 +435,7 @@ class Table extends Action {
 
     public function executeMultiple($sql, $data) {
         $db = $this->Connection();
-        $this->komunikat("ExecuteMultiple()", $sql);
+        $this->komunikat("ExecuteMultiple", $sql);
         $sth = $db->prepare($sql);
         $res = $db->executeMultiple($sth, $data);
         if (PEAR :: isError($res)) {
@@ -457,7 +447,7 @@ class Table extends Action {
 
     public function getOne($sql) {
         $db = $this->Connection();
-        $this->komunikat("GetOne()", $sql);
+        $this->komunikat("GetOne", $sql);
         $res = $db->queryOne($sql);
         //print "$sql</br>";
         if (PEAR :: isError($res)) {
@@ -469,7 +459,7 @@ class Table extends Action {
 
     public function query_insert($sql) {
         $db = $this->Connection();
-        $this->komunikat("Query_Insert()", $sql);
+        $this->komunikat("Query_Insert", $sql);
         $rows = & $db->query($sql);
         if (PEAR :: isError($rows)) {
             $this->_error($rows);
@@ -480,7 +470,7 @@ class Table extends Action {
 
     public function query($sql) {
         $db = $this->Connection();
-        $this->komunikat("Query()", $sql);
+        $this->komunikat("Query", $sql);
         $db->setFetchMode(MDB2_FETCHMODE_ASSOC);
         $rows = & $db->queryAll($sql);
         if (PEAR :: isError($rows)) {
@@ -532,77 +522,16 @@ class Table extends Action {
         // Pobranie wybranych wierszy
         $rows = array ();
         $db->setFetchMode(MDB2_FETCHMODE_ASSOC);
-//        print_r($res);
 
         $rows = & $res->fetchAll();
 
-        $this->komunikat("findRowsWithRef()", $db->last_query);
-//print_r($this->tables_info);
+        $this->komunikat("findRowsWithRef", $db->last_query);
+
         return array (
             $_ilosc,
             $rows
         );
     }
-/*
-    function findRowsWithRef($tables, $where = "", $where2 = array (), $order = array (), $pierwszy = null, $ilosc = null) {
-        // Select ...
-        $select_sql = $this->generateSelect($tables);
-        // Where ...
-//      $where_sql = $this->generateSearch($tables, $where, $where2);
-
-        // Order by ...
-        $order_sql = $this->generateOrderBy($order);
-        // Limit ... (ilosc, pierwszy) gdy pierwszy = -1 to od konca ??
-
-        // FIXME dodac obsluge dla pozostalych pol
-        $sql_count = "SELECT COUNT(*) " . substr($select_sql, strpos($select_sql, "FROM")) . " $where_sql";
-        $sql = "$select_sql $where_sql $order_sql";
-        $this->komunikat("FindRowsWithRef()", $sql);
-        #print ($sql." -> ".strlen($sql)."<br>");
-        #print ($select_sql." -> ".strlen($select_sql)."<br>");
-        #print ($where_sql." -> ".strlen($where_sql)."<br>");
-
-        $db = $this->connection();
-        if (PEAR :: isError($db)) {
-            $this->_error($db);
-            return array ();
-        }
-
-      $db->loadModule('Extended');
-    $db->setOption('debug', 1);
-//    $db->setOption('log_line_break', "<br>");
-
-    print_R($db->getDebugOutput());
-//    $db->debug_output = array();
-//    print_R($db->getDebugOutput());
-    
-          
-        if ($pierwszy != null || $ilosc != null) $db->setLimit($ilosc, $pierwszy);
-        $res = & $db->query($sql);
-
-        if (PEAR :: isError($res)) {
-            $this->_error($res);
-            return array ();
-        }
-
-        $ilosc = & $db->queryOne($sql_count);
-        if (PEAR :: isError($ilosc)) {
-            $this->_error($ilosc);
-            return array ();
-        }
-
-        // ERROR
-        $rows = array ();
-        $db->setFetchMode(MDB2_FETCHMODE_ASSOC);
-
-        $rows = & $res->fetchAll();
-        
-        return array (
-            $ilosc,
-            $rows
-        );
-    }
-*/
 
     public function findRows($where = "") {
         $db = $this->connection();
@@ -629,7 +558,7 @@ class Table extends Action {
         }
 
         // FIXME dodac obsluge dla pozostalych pol
-        $this->komunikat("FindRows()", $sql);
+        $this->komunikat("FindRows", $sql);
 
         $res = & $db->limitQuery($sql, null, 0, 50);
         if (PEAR :: isError($res)) {
@@ -670,7 +599,7 @@ class Table extends Action {
 
         $rows = & $res->fetchAll();
 
-        $this->komunikat("loadRowsWithRef()", $db->last_query);
+        $this->komunikat("loadRowsWithRef", $db->last_query);
 
         // Zapytanie bazy danych
         return $rows;
@@ -688,7 +617,7 @@ class Table extends Action {
             $limit = " LIMIT " . $limit;
         $sql = "SELECT * FROM " . $this->table_name . $where . $order . $limit;
         
-        $this->komunikat("LoadRows()", $sql);
+        $this->komunikat("LoadRows", $sql);
 
         $db->setFetchMode(MDB2_FETCHMODE_ASSOC);
         $rows = & $db->queryAll($sql);
@@ -707,7 +636,7 @@ class Table extends Action {
     public function loadRow($table_id = 0) {
         $db = $this->connection();
 
-        $this->komunikat("LoadRow()", "Zaladowanie wiersza z tabeli $this->table_name o id = $table_id");
+        $this->komunikat("LoadRow", "Zaladowanie wiersza z tabeli $this->table_name o id = $table_id");
         $sth = $db->prepare('select * from ' . $this->table_name . ' where ' . $this->primary_keys[$this->table_name] . ' = ?');
         if (PEAR :: isError($sth)) {
             $this->_error($sth);
@@ -738,8 +667,6 @@ class Table extends Action {
         $db->loadModule('Extended');
         $db->setOption('seqcol_name', 'id'); // Kompatybilnosc z DB
         
-//      $typ = MDB2_AUTOQUERY_UPDATE; // Czy nowy wpis - nie :)
-
         // Stworzenia wiersza danych (odpowiednio poukladany)
         $wiersz = array ();
         foreach ($this->getAllFields() as $field)
@@ -747,23 +674,6 @@ class Table extends Action {
                 //if (strlen($dane[$field]) > 0)
                     $wiersz[$field] = $dane[$field];
 
-/*
-        switch (strlen($this->primary_keys[$this->table_name])) { // w zaleznosci od kluczy ilosci pol w kluczu glownym
-            case 0 :
-                $typ = MDB2_AUTOQUERY_INSERT; // tylko dodawanie
-                break;
-            default : // jeden klucz glowny - najczystsza sytuacja
-                //$pk = $array_pk[0];
-                if ($wiersz[$pk] == 0) { // jedno primary key i wartosc == 0
-                    // ZAMIANA NA WSTAWIANIE DANYCH
-                    // Pobranie wolnego identyfikatora
-                    $wiersz[$pk] = $db->nextId($this->table_name);
-                    $typ = MDB2_AUTOQUERY_INSERT; // Jest to nowy wpis
-                } else
-                    $where = $pk . "=" . $wiersz[$pk];
-                break;
-        }
-*/
         if ($wiersz[$this->primary_keys[$this->table_name]] > 0) {
           // UPDATE
                 $typ = MDB2_AUTOQUERY_UPDATE; // Czy nowy wpis - nie :)
@@ -782,7 +692,7 @@ class Table extends Action {
             return 0;
         }
 
-        $this->komunikat("SaveRow()", $db->last_query);
+        $this->komunikat("SaveRow", $db->last_query);
 
         return $wiersz[$this->primary_keys[$this->table_name]];
 
@@ -792,7 +702,7 @@ class Table extends Action {
     public function deleteRows($where) {
         $db = $this->connection();
         $sql = "DELETE FROM " . $this->table_name . " WHERE " . $where;
-        $this->komunikat("DeleteRows()", $sql);
+        $this->komunikat("DeleteRows", $sql);
         $res = & $db->query($sql);
         if (PEAR :: isError($res)) {
             $this->_error($res);
@@ -804,10 +714,9 @@ class Table extends Action {
     public function deleteRow($row_id) {
         // Ustanowienie polaczenia, jezeli jeszcze nie ma
         $db = $this->connection();
-//      $pk = $this->findPrimaryKey();
         if (strlen($pk) > 0) {
             $sql = "DELETE FROM " . $this->table_name . " WHERE " . $this->primary_keys[$this->table_name] . "=" . $row_id;
-            $this->komunikat("DeleteRow()", $sql);
+            $this->komunikat("DeleteRow", $sql);
             $res = & $db->query($sql);
             if (PEAR :: isError($res)) {
                 $this->_error($res);
@@ -819,23 +728,27 @@ class Table extends Action {
     // Konczy transakcje
     public function end($ok = true) {
 
-        $db = $this->db;
-/*         print_r($db); */
+/*         $db = $this->db; */
+        $db = $this->Connection();
         
         if ($db->inTransaction()) {
             if ($this->error == true or $ok == false) {
-                $db->rollback();
-                $this->komunikat("end()", "Kończę transakcję [ROLLBACK]");
+                $test = $db->rollback();
+                print_r($db);
+/*                    $this->query("ROLLBACK"); */
+/*                 print_r($test); */
+                $this->komunikat("end", "Kończę transakcję [ROLLBACK]");
                 return false;
             } else {
                 $db->commit();
-                $this->komunikat("end()", "Kończę transakcję [COMMIT]");
+                $this->komunikat("end", "Kończę transakcję [COMMIT]");
                 return true;
             }
         }
 
-        $this->komunikat("end()", "Brak transakcji !!!");
-/*                 $this->komunikat("end()", "ROLLBACK"); */
+        $this->komunikat("end", "Brak transakcji !!!");
+        
+        $this->disconnect();
         
         return true;
       }

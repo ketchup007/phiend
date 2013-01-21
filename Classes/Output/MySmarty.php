@@ -2,6 +2,25 @@
 
 // load Smarty library
 /* require_once SMARTY_DIR . 'Smarty.class.php'; */
+/*
+function print_current_date($params, &$smarty)
+{
+  if(empty($params['format'])) {
+    $format = "%b %e, %Y";
+  } else {
+    $format = $params['format'];
+  }
+  return strftime($format,time());
+}
+*/
+
+/*
+function smarty_function_custom_class($params, &$smarty)
+{
+    $class = $params['class'];       
+    $smarty->assign($params['var'], new $class());  
+}  
+*/
 
 class MySmarty extends Smarty {
 
@@ -39,6 +58,11 @@ class MySmarty extends Smarty {
         $this->assign('SearchAction', $name);
     }
 
+    function smarty_function_custom_class($params, &$smarty) {
+        $class = $params['class'];       
+        $smarty->assign($params['var'], new $class());  
+    }  
+
     function __construct()
     {
         require CONFIG_DIR . "config.php";
@@ -46,20 +70,18 @@ class MySmarty extends Smarty {
         parent::__construct();
         
         $smarty->allow_php_tag=true;
+/*         $smarty->register_function('date_now', 'print_current_date'); */
         $this->template_dir = CODE_DIR . 'templates/smarty/';
         $this->compile_dir  = 'private/var/templates_c/';
+/*         $this->plugins_dir  = 'application/code/templates/smarty/plugins/'; */
         $this->config_dir   = CONFIG_DIR;
 
         $this->config_booleanize = true;
         $this->assign('app_name',       APP_NAME);
         $this->assign('app_version',    APP_VERSION);
         $this->assign('db_version',     $GLOBALS['_phiend_actionController']->getUserVar('db_version'));
-        $this->assign('user',           $GLOBALS['_phiend_actionController']->getUserVar('user'));
-        $this->assign('login',          $GLOBALS['_phiend_actionController']->getUserVar('login'));
-        $this->assign('user_area_id',   $GLOBALS['_phiend_actionController']->getUserVar('user_area_id'));
-        $this->assign('user_area_all',  $GLOBALS['_phiend_actionController']->getUserVar('user_area_all'));
-        $this->assign('user_area_name', $GLOBALS['_phiend_actionController']->getUserVar('user_area_name'));
-        $this->assign('user_user_id',   $GLOBALS['_phiend_actionController']->getUserVar('user_user_id'));
+        
+        $this->assign('authorised_user',   $GLOBALS['_phiend_actionController']->getUserVar('authorised_user'));
 
         // Data
         list($r,$m,$d) = explode('-', $GLOBALS['_phiend_actionController']->getUserVar('today'));
@@ -72,8 +94,10 @@ class MySmarty extends Smarty {
         $this->assign('GFX16', 'gfx/16x16/');
         $this->assign('GFX22', 'gfx/22x22/');
         $this->assign('GFX32', 'gfx/32x32/');
+/*
         $this->assign('PRV_SIGNED', PRV_SIGNED);
         $this->assign('PRV_UNSIGNED', PRV_UNSIGNED);
+*/
         
         $this->assign('menu', $GLOBALS['_phiend_actionController']->getUserVar('menu'));
     }

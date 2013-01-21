@@ -11,7 +11,7 @@ class Action_Wyswietl extends MyAction {
 	function init() {
 		// Uruchomienie silnika Smarty
 		$this->smarty = new MySmarty;
-		parent :: generateMenu();
+/* 		parent :: generateMenu(); */
 
 		$search = $this->getSearch();
 
