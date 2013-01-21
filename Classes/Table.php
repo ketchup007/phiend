@@ -734,7 +734,7 @@ class Table extends Action {
         if ($db->inTransaction()) {
             if ($this->error == true or $ok == false) {
                 $test = $db->rollback();
-                print_r($db);
+/*                 print_r($db); */
 /*                    $this->query("ROLLBACK"); */
 /*                 print_r($test); */
                 $this->komunikat("end", "Kończę transakcję [ROLLBACK]");

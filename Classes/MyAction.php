@@ -222,12 +222,12 @@ class MyAction extends Table {
 
 		function finish_action($hash) {
 		    // Sprawdzenie czy taki hash jest
-		    $this->query("LOCK TABLES aplikacja_blokady WRITE");
+/* 		    $this->query("LOCK TABLES aplikacja_blokady WRITE"); */
 		    $wiersz = $this->LoadRows('aplikacja_blokady', "hash = '$hash'");
 /* 		    print_r($wiersz); */
 		    $this->delete('aplikacja_blokady', "hash = '$hash'");
 		    // Skasowanie starych zapisow - z przed godziny
-		    $this->query("UNLOCK TABLES");
+/* 		    $this->query("UNLOCK TABLES"); */
 		    
 /* 		    $this->delete('aplikacja_blokady', "created < TIMESTAMPADD(HOUR, -1, '".$wiersz[0]['created']."')"); */
 		    $this->delete('aplikacja_blokady', "created < TIMESTAMPADD(HOUR, -24, NOW())");
