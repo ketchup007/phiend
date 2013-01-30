@@ -11,13 +11,13 @@ class Table extends Action {
     private $references   = array();
     private $searchable   = array();
     
-    private static $db;
+    private static $db    = null;
     private $error;
     private $error_message;
 
     function __construct($table_name = "") {
         $this->table_name = $table_name;
-        $this->db = null;
+/*         $this->db = null; */
     }
 
     function get_tables_info() {
@@ -243,6 +243,14 @@ class Table extends Action {
 
         return $where_sql;
     }
+    
+    function getDB() {
+        return $this->db;
+    }
+
+    function setDB($db) {
+        return $this->db = $db;
+    }
 
     function generateOrderBy($order) {
         $sql = "";
@@ -270,7 +278,7 @@ class Table extends Action {
 */
 
         // Gdy brak polaczenia, polacz sie
-        if (!is_a($this->db, "MDB2_Driver_mysqli")) {
+        if (!is_a($this->getDB(), "MDB2_Driver_mysqli")) {
         
             $options = array (
                 'debug' => 1,
@@ -287,7 +295,7 @@ class Table extends Action {
                 return null;
             }
             
-            $this->db = $db;
+            $this->setDB($db);
 /*             print_r($db); */
             // Gdy połączenie, zapisz w sesji
 /*             $_SESSION['established_connection'] = $db; */
@@ -296,23 +304,23 @@ class Table extends Action {
 //          $this->table_fields = $this->getAllFields();
             if (FORCE_LATIN2 == 1) $res = & $db->query('SET NAMES latin2');
             if (FORCE_UTF8 == 1)   $res = & $db->query('SET NAMES UTF8');
-            $this->db->query("SET autocommit = 0");
+            $this->getDB()->query("SET autocommit = 0");
 
             $this->komunikat("Connection", "Polaczenie z baza danych. [OK]");
         }
 /* print_r($this->db->connection); */
 
-        return $this->db;
+        return $this->getDB();
     }
 
     private function disconnect() {
-        $db = $this->db;
+        $db = $this->getDB();
 
         if ($db != null) {
             $db->disconnect();
             $this->komunikat("Disconnect", "Rozlaczenie z baza danych.");
         }
-        $this->db = null;
+        $this->setDB(null);
     }
     
     private function _error($db_er) {
@@ -328,7 +336,7 @@ class Table extends Action {
 /*       $conn_id = $this->db->connection; */
       $conn_id = null;
       $transakcja = '';
-      if ($this->db->inTransaction()) $transakcja = 'T';
+      if ($this->getDB()->inTransaction()) $transakcja = 'T';
 
       if(php_sapi_name() == 'cli' && empty($_SERVER['REMOTE_ADDR'])) {
         print(date('r')." $function: ".strip_tags($komunikat)."\n");
