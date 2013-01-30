@@ -442,6 +442,7 @@ class Table extends Action {
             $this->_error($res);
             return array ();
         }
+        $sth->free();
         return $res;
     }
 
@@ -652,6 +653,7 @@ class Table extends Action {
 
         $db->setFetchMode(MDB2_FETCHMODE_ASSOC);
         $row = $res->fetchRow();
+        $sth->free();
         return $row;
     }
 
