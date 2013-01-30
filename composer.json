@@ -10,7 +10,7 @@
         "pear-pear.php.net/Log":                 ">=1.12.7",
         "pear-pear.php.net/Mail":                ">=1.2.0",
         "pear-pear.php.net/Numbers_Words":       ">=0.16.4@beta",
-        "pear-pear.php.net/Console_ProgressBar": "0.5.2@beta",
+        "pear-pear.php.net/Console_ProgressBar": ">=0.5.2@beta",
         "pear-pear.php.net/MDB2_Driver_mysql":   ">=1.4.1@beta",
         "pear-pear.php.net/MDB2_Driver_mysqli":  ">=1.4.1@beta",
         "pear-pear.php.net/MDB2":                "2.5.0-beta5"
