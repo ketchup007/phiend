@@ -244,14 +244,6 @@ class Table extends Action {
         return $where_sql;
     }
     
-    function getDB() {
-        return $this->db;
-    }
-
-    function setDB($db) {
-        return $this->db = $db;
-    }
-
     function generateOrderBy($order) {
         $sql = "";
         $pierwszy = true;
@@ -278,7 +270,7 @@ class Table extends Action {
 */
 
         // Gdy brak polaczenia, polacz sie
-        if (!is_a($this->getDB(), "MDB2_Driver_mysqli")) {
+        if (!is_a($this->db, "MDB2_Driver_mysqli")) {
         
             $options = array (
                 'debug' => 1,
@@ -295,7 +287,7 @@ class Table extends Action {
                 return null;
             }
             
-            $this->setDB($db);
+            $this->db = $db;
 /*             print_r($db); */
             // Gdy połączenie, zapisz w sesji
 /*             $_SESSION['established_connection'] = $db; */
@@ -304,23 +296,23 @@ class Table extends Action {
 //          $this->table_fields = $this->getAllFields();
             if (FORCE_LATIN2 == 1) $res = & $db->query('SET NAMES latin2');
             if (FORCE_UTF8 == 1)   $res = & $db->query('SET NAMES UTF8');
-            $this->getDB()->query("SET autocommit = 0");
+            $this->db->query("SET autocommit = 0");
 
             $this->komunikat("Connection", "Polaczenie z baza danych. [OK]");
         }
 /* print_r($this->db->connection); */
 
-        return $this->getDB();
+        return $this->db;
     }
 
     private function disconnect() {
-        $db = $this->getDB();
+        $db = $this->db;
 
         if ($db != null) {
             $db->disconnect();
             $this->komunikat("Disconnect", "Rozlaczenie z baza danych.");
         }
-        $this->setDB(null);
+        $this->db = null;
     }
     
     private function _error($db_er) {
@@ -336,7 +328,7 @@ class Table extends Action {
 /*       $conn_id = $this->db->connection; */
       $conn_id = null;
       $transakcja = '';
-      if ($this->getDB()->inTransaction()) $transakcja = 'T';
+      if ($this->db->inTransaction()) $transakcja = 'T';
 
       if(php_sapi_name() == 'cli' && empty($_SERVER['REMOTE_ADDR'])) {
         print(date('r')." $function: ".strip_tags($komunikat)."\n");
@@ -671,7 +663,7 @@ class Table extends Action {
     }
 
     // Metoda zapisuje okreslony wiersz w bazie danych (insert lub update)
-    public function saveRow($dane = array ()) {
+    public function saveRow($dane = array()) {
         // Ustanowienie polaczenia, jezeli jeszcze nie ma
         $db = $this->connection();      
         $db->loadModule('Extended');
