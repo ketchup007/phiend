@@ -63,10 +63,11 @@ class ConfigParser {
 	 * At the end, closes all files and frees parser resources.
 	 */
 	function parse() {
-		$this->_parser = & xml_parser_create();
+/* 		$this->_parser = & xml_parser_create(); */
+		$this->_parser = xml_parser_create();
 		xml_parser_set_option($this->_parser, XML_OPTION_CASE_FOLDING, 0);
 		xml_parser_set_option($this->_parser, XML_OPTION_SKIP_WHITE, 1);
-		xml_set_object($this->_parser, & $this);
+		xml_set_object($this->_parser, $this);
 		xml_set_element_handler($this->_parser, 'startElement',  'endElement');
 		xml_set_character_data_handler($this->_parser, 'characters');
 		$this->_filename = CODE_DIR . 'config/phiend-config.xml';
@@ -341,7 +342,7 @@ class ConfigParser {
 	* @param array $data The table to fill
 	* @access private
 	*/
-	function _fillWithDefaults(&$data) {
+	function _fillWithDefaults($data) {
 		global $_phiend_defaultTagContent;
 	
 		foreach ($data as $key => $value) {
