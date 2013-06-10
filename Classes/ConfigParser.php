@@ -63,8 +63,7 @@ class ConfigParser {
 	 * At the end, closes all files and frees parser resources.
 	 */
 	function parse() {
-/* 		$this->_parser = & xml_parser_create(); */
-		$this->_parser = xml_parser_create();
+		$this->_parser = & xml_parser_create();
 		xml_parser_set_option($this->_parser, XML_OPTION_CASE_FOLDING, 0);
 		xml_parser_set_option($this->_parser, XML_OPTION_SKIP_WHITE, 1);
 		xml_set_object($this->_parser, & $this);
