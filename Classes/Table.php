@@ -11,32 +11,31 @@ class Table extends Action {
     private $references   = array();
     private $searchable   = array();
     
-    private static $db    = null;
+/*     private static $db    = null; */
     private $error;
     private $error_message;
 
     function __construct($table_name = "") {
         $this->table_name = $table_name;
-/*         $this->db = null; */
     }
 
-    function get_tables_info() {
+    public function get_tables_info() {
         return $this->tables_info;
     }
 
-    function get_primary_keys() {
+    public function get_primary_keys() {
         return $this->primary_keys;
     }
 
-    function get_references() {
+    public function get_references() {
         return $this->references;
     }
 
-    function get_searchable() {
+    public function get_searchable() {
         return $this->searchable;
     }
 
-    function okreslTyp($wyraz) {
+    private function okreslTyp($wyraz) {
         $typy = array('date'    => "\d{4}-\d{2}-\d{2}", 
                       'decimal' => "\d{1,6}.\d{2}", 
                       'integer' => '\d+', 
@@ -62,7 +61,7 @@ class Table extends Action {
         return $fields;
     }
 
-    function findValuesOfType($where = array (), $function) {
+    private function findValuesOfType($where = array (), $function) {
         $values = array ();
         foreach ($where as $value)
             if ($this->valid($value, $function))
@@ -83,7 +82,7 @@ class Table extends Action {
         - potrzebna jest podana kolejnosc
         - potrzebne sa ilosci
     */
-    public function generateSelect($tables) {
+    private function generateSelect($tables) {
         $select = "";
 
         $pierwsze = true;
@@ -244,7 +243,7 @@ class Table extends Action {
         return $where_sql;
     }
     
-    function generateOrderBy($order) {
+    private function generateOrderBy($order) {
         $sql = "";
         $pierwszy = true;
         foreach ($order as $_order) {
@@ -257,62 +256,41 @@ class Table extends Action {
         }
         return $sql;
     }
+    
+    function initiate_database_connection() {
+/*         if (!isset($_SESSION['established_connection'])) { */
+          $options = array (
+              'debug'             => 2,
+              'charset'           => 'UTF8',
+              'use_transactions'  => 1
+          );
+      
+          $db = MDB2 :: connect(DSN, $options);
+//print_r(DSN);  
+// print_r($db);  
+      		if (FORCE_LATIN2 == true) $db->query("SET NAMES latin2");
+      		if (FORCE_UTF8 == true)   $db->query("SET NAMES UTF8");
+          $_SESSION['established_connection'] = $db;
+/*         } */
+
+/*             $db->query("SET AUTOCOMMIT = 0"); */
+        
+    }
 
     // Metoda zwraca polaczenie z baza danych
-    private function connection() {
+    static private function connection() {
 
-        // SPRAWDZENIE CZY JUZ JEST JAKIES POLACZENIE W SESJI
-/*
-        if (is_a($_SESSION['established_connection'], "MDB2_Driver_mysql")) {
-            $this->db = $_SESSION['established_connection'];
-            print_r($this->db);
-        }
-*/
-
-        // Gdy brak polaczenia, polacz sie
-        if (!is_a($this->db, "MDB2_Driver_mysqli")) {
-        
-            $options = array (
-                'debug' => 1,
-                'use_transactions' => 1
-/*                 'persistent' => 1, */
-/*                 'portability' => MDB2_PORTABILITY_ALL */
-            );
-
-/*             $db = & MDB2 :: factory(DSN, $options); */
-            $db = & MDB2 :: singleton(DSN, $options);
-            if (PEAR :: isError($db)) {
-                $this->_error($db);
-                $this->komunikat("Connection", "Polaczenie z baza danych. [FAILED]");
-                return null;
-            }
-            
-            $this->db = $db;
-/*             print_r($db); */
-            // Gdy połączenie, zapisz w sesji
-/*             $_SESSION['established_connection'] = $db; */
-
-
-//          $this->table_fields = $this->getAllFields();
-            if (FORCE_LATIN2 == 1) $res = & $db->query('SET NAMES latin2');
-            if (FORCE_UTF8 == 1)   $res = & $db->query('SET NAMES UTF8');
-            $this->db->query("SET autocommit = 0");
-
-            $this->komunikat("Connection", "Polaczenie z baza danych. [OK]");
-        }
-/* print_r($this->db->connection); */
-
-        return $this->db;
+        return $_SESSION['established_connection'];
     }
 
     private function disconnect() {
-        $db = $this->db;
+        $db = $this->connection();
 
         if ($db != null) {
             $db->disconnect();
             $this->komunikat("Disconnect", "Rozlaczenie z baza danych.");
         }
-        $this->db = null;
+
     }
     
     private function _error($db_er) {
@@ -323,12 +301,13 @@ class Table extends Action {
         #$this->db = null;
     }
 
-    private function komunikat($function, $komunikat) {
-/*         backtrace(); */
-/*       $conn_id = $this->db->connection; */
+    public function komunikat($function, $komunikat) {
       $conn_id = null;
       $transakcja = '';
-      if ($this->db->inTransaction()) $transakcja = 'T';
+      
+/*       print_r($_SESSION['established_connection']); */
+      
+      if ($this->connection()->inTransaction()) $transakcja = 'T';
 
       if(php_sapi_name() == 'cli' && empty($_SERVER['REMOTE_ADDR'])) {
         print(date('r')." $function: ".strip_tags($komunikat)."\n");
@@ -338,11 +317,8 @@ class Table extends Action {
     }
 
     private function log($ident, $linia) {
-        $db = $this->Connection();
+        $db = $this->connection();
         $this->komunikat("Log", $linia);
-/*         $conf['db'] = $db; */
-//        $logger = & Log :: singleton('sql', 'logi', $ident, $conf);
-//        $logger->log($linia);
     }
     
   // !! METODY PUBLICZNE !!
@@ -357,84 +333,88 @@ class Table extends Action {
 
     // Czysci cache i ustawia nowa tabele
     public function getNameOfPrimaryKey($table_name) {
-            $this->setTable($table_name);
+        $this->setTable($table_name);
         return $this->primary_keys[$table_name];
     }
     
     public function setTable($table_name) {
-        $db = $this->connection();
-        $this->table_name = $table_name;
+        if (strlen($table_name) > 0) {
 
-        if (!isSet($this->tables_info[$table_name])) {
-            // Ustawienie
-            $db->loadModule("Reverse");
-            // Informacje o polach
-            $this->tables_info[$table_name] = $db->tableInfo($this->table_name);
-            
-            // Ustawienie primary_key
-            // Ustawienie referencji (wszystkie pozostale pola zaczynajace sie od id_)
-            $this->references[$table_name] = array();
-            foreach ($this->tables_info[$table_name] as $field) {
-              if (!(strpos($field['flags'], 'primary_key') === false)) {
-//              $this->primary_keys[$field['name']] =  $table_name;
-                $this->primary_keys[$table_name]    =  $field['name'];
-              } else {
-                // Sprawdzenie czy juz jest to klucz innej tabeli
-                $reference = false;
-                foreach ($this->primary_keys as $key) {
-                  if ($key == $field['name']) $reference = true;
+            $db = $this->connection();
+
+            $this->table_name = $table_name;
+    
+            if (!isSet($this->tables_info[$table_name])) {
+    
+                // Ustawienie
+                $db->loadModule("Reverse");
+                
+                // Informacje o polach
+                $this->tables_info[$table_name] = $db->tableInfo($table_name);
+                
+                // Ustawienie primary_key
+                // Ustawienie referencji (wszystkie pozostale pola zaczynajace sie od id_)
+                $this->references[$table_name] = array();
+                foreach ($this->tables_info[$table_name] as $field) {
+                  
+                    if (!(strpos($field['flags'], "primary_key") === false)) {
+                    $this->primary_keys[$field['name']] =  $table_name;
+                      $this->primary_keys[$table_name]    =  $field['name'];
+                    } else {
+                      // Sprawdzenie czy juz jest to klucz innej tabeli
+                      $reference = false;
+                      foreach ($this->primary_keys as $key) {
+                        if ($key == $field['name']) $reference = true;
+                      }
+                      // Jest to klucz - dodaj do referencji
+                      if ($reference)
+                        array_push($this->references[$table_name], $field['name']);
+                    }
                 }
-                // Jest to klucz - dodaj do referencji
-                if ($reference)
-                  array_push($this->references[$table_name], $field['name']);
-              }
-            }
-            
-            // Sprawdzenie czy pozostale tabele nie odnosza sie do tej tabeli i wstawienie do references
-            foreach (array_keys($this->tables_info) as $_table_name) {
-              if ($table_name != $_table_name) {
-                // Sprawdzenie czy klucz glowny aktualnej tabeli jest w polach i dodanie do referencji tych tabel
-                foreach($this->tables_info[$_table_name] as $pole) {
-                  if ($pole['name'] == $this->primary_keys[$table_name]) array_push($this->references[$_table_name], $pole['name']);
+                
+                // Sprawdzenie czy pozostale tabele nie odnosza sie do tej tabeli i wstawienie do references
+                foreach (array_keys($this->tables_info) as $_table_name) {
+                  if ($table_name != $_table_name) {
+                    // Sprawdzenie czy klucz glowny aktualnej tabeli jest w polach i dodanie do referencji tych tabel
+                    foreach($this->tables_info[$_table_name] as $pole) {
+                      if ($pole['name'] == $this->primary_keys[$table_name]) array_push($this->references[$_table_name], $pole['name']);
+                    }
+                  }
                 }
-              }
+                
+                // FIXME zaladowanie list pol do przeszukiwania (jezeli nie ma listy to szukaj po wszystkich)
+                $dir = "application/code/config/tables/search";
+                $handle = opendir($dir);
+                $pola = @file($dir."/".$table_name);
+    
+                if ($pola != FALSE) {
+                  $this->searchable[$table_name] = array();
+                  foreach ($pola as $pole) array_push($this->searchable[$table_name], rtrim($pole, "\n"));
+                  $this->komunikat("setTable", "$table_name - załadowano plik z listą pól");
+                } else
+                  $this->komunikat("setTable", "$table_name - brak pliku z listą pól do szukania");
             }
-            
-            // FIXME zaladowanie list pol do przeszukiwania (jezeli nie ma listy to szukaj po wszystkich)
-            $dir = "application/code/config/tables/search";
-            $handle = opendir($dir);
-            $pola = @file($dir."/".$table_name);
-/*             var_dump($pola); */
-            if ($pola != FALSE) {
-              $this->searchable[$table_name] = array();
-              foreach ($pola as $pole) array_push($this->searchable[$table_name], rtrim($pole, "\n"));
-              $this->komunikat("setTable", "$table_name - załadowano plik z listą pól");
-            } else
-              $this->komunikat("setTable", "$table_name - brak pliku z listą pól do szukania");
         }
     }
 
     // Rozpoczyna transakcje
     public function begin() {
-        $db = $this->Connection();
-
+        $db = $this->connection();
+//print_r($db);
 //        $db->autoCommit(false);
         if ($db->supports('transactions')) {
           $db->beginTransaction();
-/*           $db->query("START TRANSACTION"); */
-/*           $this->query("START TRANSACTION"); */
           $this->komunikat("begin", "Rozpoczynam transakcję");
         } else {
           $this->komunikat("begin", "DB nie wspiera transakcji");
         }
-/*         if ($db->inTransaction()) $this->komunikat("begin", "jestem w transakcji"); */
         
         $this->error = false;
         $this->error_message = "";
     }
 
     public function executeMultiple($sql, $data) {
-        $db = $this->Connection();
+        $db = $this->connection();
         $this->komunikat("ExecuteMultiple", $sql);
         $sth = $db->prepare($sql);
         $res = $db->executeMultiple($sth, $data);
@@ -447,7 +427,7 @@ class Table extends Action {
     }
 
     public function getOne($sql) {
-        $db = $this->Connection();
+        $db = $this->connection();
         $this->komunikat("GetOne", $sql);
         $res = $db->queryOne($sql);
         //print "$sql</br>";
@@ -459,9 +439,9 @@ class Table extends Action {
     }
 
     public function query_insert($sql) {
-        $db = $this->Connection();
+        $db = $this->connection();
         $this->komunikat("Query_Insert", $sql);
-        $rows = & $db->query($sql);
+        $rows = $db->query($sql);
         if (PEAR :: isError($rows)) {
             $this->_error($rows);
             return array ();
@@ -470,10 +450,10 @@ class Table extends Action {
     }
 
     public function query($sql) {
-        $db = $this->Connection();
+        $db = $this->connection();
         $this->komunikat("Query", $sql);
         $db->setFetchMode(MDB2_FETCHMODE_ASSOC);
-        $rows = & $db->queryAll($sql);
+        $rows = $db->queryAll($sql);
         if (PEAR :: isError($rows)) {
             $this->_error($rows);
             return array ();
@@ -498,7 +478,7 @@ class Table extends Action {
 
         // Wyliczenie ilosci wierszy (bez limitow) spelniajacych zapytanie
 //        $db->query("set profiling=1");
-        $_ilosc = & $db->queryOne($sql_count);
+        $_ilosc = $db->queryOne($sql_count);
         if (PEAR :: isError($_ilosc)) {
             $this->_error($_ilosc);
             return array ();
@@ -512,8 +492,8 @@ class Table extends Action {
 
         if ($pierwszy != null || $ilosc != null) {
             $db->loadModule('Extended');
-                $res = & $db->limitQuery($sql, null, $ilosc, $pierwszy);
-        } else $res = & $db->query($sql);
+                $res = $db->limitQuery($sql, null, $ilosc, $pierwszy);
+        } else $res = $db->query($sql);
 
         if (PEAR :: isError($res)) {
             $this->_error($res);
@@ -524,7 +504,7 @@ class Table extends Action {
         $rows = array ();
         $db->setFetchMode(MDB2_FETCHMODE_ASSOC);
 
-        $rows = & $res->fetchAll();
+        $rows = $res->fetchAll();
 
         $this->komunikat("findRowsWithRef", $db->last_query);
 
@@ -534,19 +514,70 @@ class Table extends Action {
         );
     }
 
-    public function findRows($where = "") {
+
+    // ---------------------------------
+    // !METODY PUBLICZNE
+
+		public function LoadRows($table_name, $where = null, $order = null, $limit = null) {
+			$this->setTable($table_name);
+			return $this->table_LoadRows($where, $order, $limit);
+		}
+	
+		public function LoadRow($table_name, $id) {
+			$this->setTable($table_name);
+			return $this->table_LoadRow($id);
+		}
+	
+		public function delete($table_name, $where = null) {
+			$this->setTable($table_name);
+			$this->table_deleteRows($where);
+		}
+	  
+    public function deleteRow($table_name, $row_id) {
+			$this->setTable($table_name);
+			$this->table_deleteRow($row_id);
+		}
+		
+    public function deleteRows($where) {
+			$this->setTable($table_name);
+			$this->table_deleteRows($where);
+		}
+
+		public function save($table_name, $data) {
+			$this->setTable($table_name);
+			return $this->table_saveRow($data);
+		}
+
+/*
+    public function saveRows($wiersze = array ()) {
+        foreach ($wiersze as $wiersz)
+            $this->table_saveRow($wiersz);
+    }
+*/
+
+    public function findRows($table_name, $where = "") {
+			$this->setTable($table_name);
+			return $this->table_findRows($where);
+    }
+
+    public function loadRowsWithRef($tables, $where = array(), $order=array(), $pierwszy = 0, $ilosc = 50) {
+			return $this->table_loadRowsWithRef($tables, $where, $order, $pierwszy, $ilosc);
+    }
+
+    // ---------------------------------
+    // !METODY PRYWATNE
+
+    private function table_findRows($where = "") {
         $db = $this->connection();
         if (PEAR :: isError($db)) {
             $this->_error($db);
             return array ();
         }
-        //if ($db == null) {return array();}
 
         $sql = "SELECT * FROM " . $this->table_name;
         $a_where = explode(" ", $where);
         $is_where = false;
 
-        // !! UWAGA NA TO !!
         // Sa pola i wyniki tekstowe
         if (count($this->findValuesOfType($a_where, "_string")) > 0 and count($this->findTextFields()) > 0) {
             foreach ($this->findTextFields() as $field)
@@ -561,7 +592,7 @@ class Table extends Action {
         // FIXME dodac obsluge dla pozostalych pol
         $this->komunikat("FindRows", $sql);
 
-        $res = & $db->limitQuery($sql, null, 0, 50);
+        $res = $db->limitQuery($sql, null, 0, 50);
         if (PEAR :: isError($res)) {
             $this->_error($res);
             return array ();
@@ -569,14 +600,14 @@ class Table extends Action {
         // ERROR
         $rows = array ();
         $db->setFetchMode(MDB2_FETCHMODE_ASSOC);
-        while ($row = & $res->fetchRow()) {
+        while ($row = $res->fetchRow()) {
             array_push($rows, $row);
         }
 
         return $rows;
     }
   
-    public function loadRowsWithRef($tables, $where = array(), $order=array(), $pierwszy = 0, $ilosc = 50) {
+    private function table_loadRowsWithRef($tables, $where = array(), $order=array(), $pierwszy = 0, $ilosc = 50) {
 
         $select_sql = $this->generateSelect($tables);
         $where_sql  = $this->generateSearch($tables, null, $where);
@@ -587,7 +618,7 @@ class Table extends Action {
         $db = $this->connection();
         $db->loadModule('Extended');
                 
-        $res = & $db->limitQuery($sql, null, $ilosc, $pierwszy);
+        $res = $db->limitQuery($sql, null, $ilosc, $pierwszy);
         if (PEAR :: isError($rows)) {
             $this->_error($rows);
             return array ();
@@ -598,7 +629,7 @@ class Table extends Action {
         
 //        print_r($res);
 
-        $rows = & $res->fetchAll();
+        $rows = $res->fetchAll();
 
         $this->komunikat("loadRowsWithRef", $db->last_query);
 
@@ -607,7 +638,7 @@ class Table extends Action {
     }
 
     // Metoda zwraca okreslony wiersz (tylko 1 lub zaden)
-    public function loadRows($where = "", $order = "", $limit = "") {
+    private function table_loadRows($where = "", $order = "", $limit = "") {
         $db = $this->connection();
 
         if (strlen($where) > 0)
@@ -621,7 +652,7 @@ class Table extends Action {
         $this->komunikat("LoadRows", $sql);
 
         $db->setFetchMode(MDB2_FETCHMODE_ASSOC);
-        $rows = & $db->queryAll($sql);
+        $rows = $db->queryAll($sql);
         if (PEAR :: isError($rows)) {
         print_r($rows);
             $this->_error($rows);
@@ -634,7 +665,7 @@ class Table extends Action {
     }
 
     // Metoda zwraca okreslony wiersz (tylko 1 lub zaden) (tylko z pojedynczym primary key)
-    public function loadRow($table_id = 0) {
+    private function table_loadRow($table_id = 0) {
         $db = $this->connection();
 
         $this->komunikat("LoadRow", "Zaladowanie wiersza z tabeli $this->table_name o id = $table_id");
@@ -645,7 +676,7 @@ class Table extends Action {
         }
 
         // Zaladowanie wiersza
-        $res = & $sth->execute($table_id);
+        $res = $sth->execute($table_id);
         if (PEAR :: isError($res)) {
             $this->_error($res);
             return array ();
@@ -657,13 +688,8 @@ class Table extends Action {
         return $row;
     }
 
-    public function saveRows($wiersze = array ()) {
-        foreach ($wiersze as $wiersz)
-            $this->saveRow($wiersz);
-    }
-
     // Metoda zapisuje okreslony wiersz w bazie danych (insert lub update)
-    public function saveRow($dane = array()) {
+    private function table_saveRow($dane = array()) {
         // Ustanowienie polaczenia, jezeli jeszcze nie ma
         $db = $this->connection();      
         $db->loadModule('Extended');
@@ -701,11 +727,11 @@ class Table extends Action {
     }
     
     // Metoda kasuje wiele wierszy
-    public function deleteRows($where) {
+    private function table_deleteRows($where) {
         $db = $this->connection();
         $sql = "DELETE FROM " . $this->table_name . " WHERE " . $where;
         $this->komunikat("DeleteRows", $sql);
-        $res = & $db->query($sql);
+        $res = $db->query($sql);
         if (PEAR :: isError($res)) {
             $this->_error($res);
             return array ();
@@ -713,13 +739,13 @@ class Table extends Action {
     }
 
     // Metoda kasuje tylko jeden wybrany wiersz
-    public function deleteRow($row_id) {
+    private function table_deleteRow($row_id) {
         // Ustanowienie polaczenia, jezeli jeszcze nie ma
         $db = $this->connection();
         if (strlen($pk) > 0) {
             $sql = "DELETE FROM " . $this->table_name . " WHERE " . $this->primary_keys[$this->table_name] . "=" . $row_id;
             $this->komunikat("DeleteRow", $sql);
-            $res = & $db->query($sql);
+            $res = $db->query($sql);
             if (PEAR :: isError($res)) {
                 $this->_error($res);
                 return array ();
@@ -730,8 +756,7 @@ class Table extends Action {
     // Konczy transakcje
     public function end($ok = true) {
 
-/*         $db = $this->db; */
-        $db = $this->Connection();
+        $db = $this->connection();
         
         if ($db->inTransaction()) {
             if ($this->error == true or $ok == false) {

@@ -145,6 +145,11 @@ class ActionController {
 		include_once CONFIG_OUTPUT_DIR . 'phiend-config.php';
 		//include_once CONFIG_OUTPUT_DIR . 'log-drivers.php';
 		
+		// !Create database connection
+    $table = new Table();
+    $table->initiate_database_connection();
+    $table->komunikat('ActionController::run', 'asd');
+		
 		//$actionName holds name of action
 		while (strcmp($actionName, '') != 0) {
 			
@@ -214,7 +219,7 @@ class ActionController {
 		}
 		
 		if ($this->_authConfig['use-auth'] == true) {
-/* 			include_once PHIEND_DIR . 'AuthManager.class.php'; */
+
 			//perform authentication
 			if (!isset($this->_auth)) {
 				$this->_auth = new AuthManager($this->_sessionConfig, $this->_authConfig);
@@ -226,6 +231,11 @@ class ActionController {
 				return false;
 			}
 		}
+
+		// !Create database connection
+    $table = new Table();
+    $table->initiate_database_connection();
+    $table->komunikat('ActionController::performAction', "Akcja: $actionName");
 		
 		//create action object
 		include_once CODE_DIR . 'actions/' . $actionName . '.class.php';

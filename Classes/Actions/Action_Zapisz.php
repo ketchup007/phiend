@@ -27,7 +27,7 @@ class Action_Zapisz extends MyAction {
             // Zapisanie podstawowego rekordu 
             if ($save) {
               $instance = new $name();
-              return $instance->setAllData(parent :: get('dane'))->save();
+              return $instance->setAllData(parent :: get('dane'))->persist();
             }
             else return null;
         } else {
@@ -45,11 +45,13 @@ class Action_Zapisz extends MyAction {
         
     }
 
+/*
     function save($table_name, $data) {
-        $this->setTable($table_name);
-        return $this->saveRow($data);
+        return $this->saveRow($table_name, $data);
     }
+*/
 
+/*
     function zapiszHistorie($id, $pola, $naglowek_n = "Utworzono", $naglowek_u = "Zmiana danych") {
         // Sprawdzenie, czy mamy doczynienia z nowym wpisem, czy nie
         $opis     = "";
@@ -68,11 +70,13 @@ class Action_Zapisz extends MyAction {
 
         parent :: query("CALL dopisz_historie($id, '$naglowek', '$opis', '$autor')");
     }
+*/
 
+/*
     function delete($table_name, $where = null) {
-        $this->setTable($table_name);
-        $this->deleteRows($where);
+        $this->deleteRows($table_name, $where);
     }
+*/
 
     function action($name = null) {
         if ($name == null)

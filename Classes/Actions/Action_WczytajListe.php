@@ -96,6 +96,10 @@ class Action_WczytajListe extends MyAction {
 /* 				print_r(parent :: getSearch()); */
 		}
 
+		function getFilterValue($nazwa) {
+				return parent :: getSearch($nazwa);
+		}
+
 		function isFilter($nazwa) {
 				$vars = & $GLOBALS["_" . ACTION_METHOD];
 /* 				print_r($vars); */
@@ -111,8 +115,10 @@ class Action_WczytajListe extends MyAction {
     // Ustawia domyslne wartosci filtra
 	  function setFilterDefaults($filter, $default_value) {
         $filters = parent :: getSearch();
-/*         print_r($filters); */
+//        print_r($filters);
+
 		    if (!isSet($filters[$filter]) || strlen($filters[$filter]) == 0) parent :: setSearch($filter, $default_value);
+//        print_r($filters);
 	  }
   
     // Ustawia domyslne wartosci sortowania

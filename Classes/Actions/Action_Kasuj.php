@@ -24,16 +24,20 @@ class Action_Kasuj extends MyAction {
 				return parent :: get('dane');
 		}
 
+/*
 		function canDelete() {
 				//if ($_GET['is_js_confirmed'] == 1) return true;
 				//else return false;
 				return true;
 		}
+*/
 
+/*
 		function delete($table, $where = null) {
 				if ($this->canDelete())
 						parent :: delete($table, $where);
 		}
+*/
 
 		function action($name = null) {
 				if ($name == null)

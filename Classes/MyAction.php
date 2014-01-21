@@ -180,37 +180,7 @@ class MyAction extends Table {
 			$dbg = "<pre>" . str_replace("\n", "<br>", print_r($this->get($name), true)) . "</pre>";
 			$this->view("dbg_$name", "$name<br>$dbg");
 		}
-		
-	  // XXX POWIAZANIE Z BAZA DANYCH
-		function LoadFirstRow($table_name, $where = null, $order = null, $limit = null) {
-			$this->setTable($table_name);
-			$wynik = parent :: LoadRows($where, $order, $limit);
-			if (is_array($wynik[0]))
-				return $wynik[0];
-			else
-				return array ();
-		}
-	
-		function LoadRows($table_name, $where = null, $order = null, $limit = null) {
-			$this->setTable($table_name);
-			return parent :: LoadRows($where, $order, $limit);
-		}
-	
-		function LoadRow($table_name, $id) {
-			$this->setTable($table_name);
-			return parent :: LoadRow($id);
-		}
-	
-		function delete($table_name, $where = null) {
-			$this->setTable($table_name);
-			$this->deleteRows($where);
-		}
-	  
-		function save($table_name, $data) {
-			$this->setTable($table_name);
-			return $this->saveRow($data);
-		}
-	
+			
 		function start_action() {
   		    // Stworzenie unikatowego wpisu
   		    parent :: query('BEGIN');
@@ -222,14 +192,9 @@ class MyAction extends Table {
 
 		function finish_action($hash) {
 		    // Sprawdzenie czy taki hash jest
-/* 		    $this->query("LOCK TABLES aplikacja_blokady WRITE"); */
 		    $wiersz = $this->LoadRows('aplikacja_blokady', "hash = '$hash'");
-/* 		    print_r($wiersz); */
 		    $this->delete('aplikacja_blokady', "hash = '$hash'");
-		    // Skasowanie starych zapisow - z przed godziny
-/* 		    $this->query("UNLOCK TABLES"); */
 		    
-/* 		    $this->delete('aplikacja_blokady', "created < TIMESTAMPADD(HOUR, -1, '".$wiersz[0]['created']."')"); */
 		    $this->delete('aplikacja_blokady', "created < TIMESTAMPADD(HOUR, -24, NOW())");
 
 		    if (count($wiersz) == 1) return true;

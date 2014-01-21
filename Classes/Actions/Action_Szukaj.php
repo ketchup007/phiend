@@ -29,10 +29,12 @@ class Action_Szukaj extends MyAction {
             $this->smarty->setExportToExcel($can_be_exported);
     }
 
+/*
     function setSearch($is_search) {
         if (method_exists($this->smarty, 'setSearch'))
             $this->smarty->setSearch($is_search);
     }
+*/
 
     // Przycisk na pasku przeszukiwania
     function addButton($name, $icon, $access, $label, $action, $preaction=null, $new_window=false) {
