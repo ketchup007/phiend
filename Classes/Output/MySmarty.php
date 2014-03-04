@@ -22,6 +22,23 @@ function smarty_function_custom_class($params, &$smarty)
 }  
 */
 
+function smarty_date_diff($params, &$smarty) {
+
+    $date1  = "now";
+    $date2  = "now";
+    $format = '%r%a';
+    
+    $assign = null;
+    
+    extract($params);
+    
+    if($assign != null) {
+        $smarty->assign($assign, date_diff(date_create($date1), date_create($date2))->format($format));
+    } else {
+        return date_diff(date_create($date1), date_create($date2))->format($format);
+    } 
+}
+
 class MySmarty extends Smarty {
 
     public $buttons         = array();
@@ -50,10 +67,12 @@ class MySmarty extends Smarty {
         $this->can_be_exported = $can_be_exported;
     }
 
+/*
     function setSearch($is_search) {
         $this->is_search = $is_search;
     }
 
+*/
     function setAction($name){
         $this->assign('SearchAction', $name);
     }
@@ -69,12 +88,13 @@ class MySmarty extends Smarty {
 
         parent::__construct();
         
-        $smarty->allow_php_tag=true;
-/*         $smarty->register_function('date_now', 'print_current_date'); */
-        $this->template_dir = CODE_DIR . 'templates/smarty/';
-        $this->compile_dir  = 'private/var/templates_c/';
-/*         $this->plugins_dir  = 'application/code/templates/smarty/plugins/'; */
-        $this->config_dir   = CONFIG_DIR;
+        $this->template_dir  = CODE_DIR . 'templates/smarty/';
+        $this->compile_dir   = 'private/var/templates_c/';
+
+/*         $this->addPluginsDir('application/code/templates/smarty/plugins/'); */
+        $this->registerPlugin("function", "date_diff", "smarty_date_diff");
+        
+        $this->config_dir    = CONFIG_DIR;
 
         $this->config_booleanize = true;
         $this->assign('app_name',       APP_NAME);
@@ -90,14 +110,11 @@ class MySmarty extends Smarty {
         $this->assign('lata', $lata);
         $this->assign('miesiace', $miesiace);
         $this->assign('DEBUG', DEBUG);
-        $this->assign('ACTION_METHOD', ACTION_METHOD);
+        $this->assign('ACTION_METHOD',   ACTION_METHOD);
+        $this->assign('TINYMCE_VERSION', TINYMCE_VERSION);
         $this->assign('GFX16', 'gfx/16x16/');
         $this->assign('GFX22', 'gfx/22x22/');
         $this->assign('GFX32', 'gfx/32x32/');
-/*
-        $this->assign('PRV_SIGNED', PRV_SIGNED);
-        $this->assign('PRV_UNSIGNED', PRV_UNSIGNED);
-*/
         
         $this->assign('menu', $GLOBALS['_phiend_actionController']->getUserVar('menu'));
     }

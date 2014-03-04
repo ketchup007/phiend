@@ -18,9 +18,11 @@ class Script extends Table {
         if ($inipath) {
             echo 'Loaded php.ini: ' . $inipath . "\n";
         } else {
-            echo 'A php.ini file is not loaded\n';
+            echo "A php.ini file is not loaded\n";
         }    
         
+        echo "Initiate database connection:  \n";    
+        parent :: initiate_database_connection();
         
         // Dodanie sciezki PEAR
 /*         set_include_path(PEAR_DIR . PATH_SEPARATOR . get_include_path()); */
